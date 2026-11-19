@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = '1795108364|17601259';
+const CACHE_VERSION = '1795109040|17699865';
 /** @type {string} */
 const CACHE_PREFIX = 'Paper Tetris-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
