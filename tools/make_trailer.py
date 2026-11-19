@@ -1,7 +1,8 @@
 """Cuts the 45-second YouTube trailer and the README GIF out of footage
 recorded with Godot's Movie Maker (see tools/record_trailer.sh), with the
-caption cards rendered by game/tests/trailer_cards.tscn and the Shy Guy's
-Toy Box theme laid over the whole thing.
+caption cards rendered by game/tests/trailer_cards.tscn and Bowser's battle
+theme ("Bowser, My Old Enemy!", from the original soundtrack rips, see
+tools/paths.py) laid over the whole thing.
 
     python make_trailer.py <footage dir> [out dir]
 
@@ -11,8 +12,14 @@ import subprocess
 import sys
 from pathlib import Path
 
+from paths import OST
+
 ROOT = Path(__file__).resolve().parent.parent
-MUSIC = ROOT / "game" / "assets" / "music" / "menu_toybox.ogg"
+MUSIC = OST / "Mario Story Original Sound Track - Yuka Tsujiyoko - Bowser, My Old Enemy!.flac"
+# the OST master is loud (-10.4 LUFS): music around -15.5 LUFS, the game's
+# sound effects (about -15.5 LUFS in the footage) 9 dB under it
+MUSIC_GAIN = 0.556
+SFX_GAIN = 0.355
 FPS = 30
 
 # (clip, start, end, caption card or None, stage tag or None)
@@ -100,9 +107,9 @@ def trailer(src: Path, out: Path):
 
     m = base + len(overlays)
     inputs += ["-i", MUSIC]
-    f.append(f"[{m}:a]atrim=0:{total:.3f},asetpts=PTS-STARTPTS,volume=0.80,"
+    f.append(f"[{m}:a]atrim=0:{total:.3f},asetpts=PTS-STARTPTS,volume={MUSIC_GAIN},"
              f"afade=t=out:st={total - 2.5:.3f}:d=2.5[mus]")
-    f.append(f"[ca]volume=0.62,afade=t=out:st={total - 1.2:.3f}:d=1.2[sfx]")
+    f.append(f"[ca]volume={SFX_GAIN},afade=t=out:st={total - 1.2:.3f}:d=1.2[sfx]")
     f.append("[mus][sfx]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95[aout]")
 
     out.mkdir(parents=True, exist_ok=True)
