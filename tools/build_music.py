@@ -1,9 +1,11 @@
-"""Convert the selected OST tracks (FLAC) into seamless-looping OGG files.
+"""Convert the selected OST tracks (FLAC) into OGG files the game plays whole.
 
-For every track we find the point where the CD recording repeats itself,
-cut the file at the end of the first full loop, bake a tiny crossfade at
-the seam, normalise loudness, and encode Ogg Vorbis. Loop metadata goes to
-game/data/music.json (read by the AudioManager at runtime).
+No loop points any more: a CD recording's own repeat is never quite the same
+twice, and splicing it back on itself was audible. Each track is kept from
+its first note to the start of its fade-out; the AudioManager crossfades it
+into the next track of its playlist (every stage pairs two similar themes,
+other music crossfades into itself). Loudness is normalised, metadata goes
+to game/data/music.json.
 
 Usage: python build_music.py [track_id ...]
 """
@@ -16,7 +18,7 @@ from pathlib import Path
 
 import numpy as np
 
-from audio_lib import decode, find_loop, track_path
+from audio_lib import decode, track_path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "game" / "assets" / "music"
@@ -53,15 +55,14 @@ TRACKS = {
     "extra_beginning": ("It's the Beginning!", "It's the Beginning!", True),
     "extra_train": ("Mt. Rugged's Pretty Rugged", "Mt. Rugged's Pretty Rugged", True),
     "extra_bowser": ("Bowser, My Old Enemy!", "Bowser, My Old Enemy!", True),
+    "extra_yoshi": ("Welcome to Yoshi Village", "Welcome to Yoshi Village", True),
+    "extra_lavalava": ("Escape from Mt. Lavalava", "Escape from Mt. Lavalava", True),
+    "extra_starhaven": ("Star Haven", "Star Haven", True),
 }
 
-# loops the detector cannot settle on: (loop start s, loop length in samples)
-# "Bowser, My Old Enemy!" repeats every 52.63 s, but the second pass is
-# played a little differently, so its correlation stays around 0.94
-LOOP_HINTS = {"extra_bowser": (16.0, 2321109)}
-
 TARGET_RMS_DB = -17.0
-XFADE = int(0.045 * SR)
+WIN = 0.25          # s, loudness window for the fade-out search
+TAIL = 0.6          # s kept after the last full-level window, faded to silence
 
 
 def write_wav(path: Path, data: np.ndarray):
@@ -74,40 +75,28 @@ def write_wav(path: Path, data: np.ndarray):
         w.writeframes(pcm.tobytes())
 
 
+def _body_range(stereo: np.ndarray) -> tuple[int, int]:
+    """First note .. start of the CD fade-out (plus a short tail)."""
+    mono = np.abs(stereo).mean(axis=1)
+    n = int(WIN * SR)
+    k = len(mono) // n
+    rms = np.sqrt((mono[:k * n].reshape(k, n) ** 2).mean(axis=1))
+    ref = float(np.median(rms[: max(1, int(k * 0.8))]))
+    loud = np.nonzero(rms >= ref * 0.5)[0]
+    first = int(np.nonzero(mono > 0.004)[0][0]) if np.any(mono > 0.004) else 0
+    last = (int(loud[-1]) + 1) * n if len(loud) else len(mono)
+    return max(0, first - int(0.02 * SR)), min(len(mono), last + int(TAIL * SR))
+
+
 def process(tid: str, catalog: dict):
-    title, display, want_loop = TRACKS[tid]
-    path = track_path(title)
-    stereo = decode(path, SR)
-    lo = decode(path, 11025, mono=True)
-    total = len(stereo)
+    title, display, _ = TRACKS[tid]
+    stereo = decode(track_path(title), SR)
+    a, b = _body_range(stereo)
+    stereo = stereo[a:b].copy()
+    t = int(TAIL * SR)
+    stereo[-t:] *= np.linspace(1.0, 0.0, t, dtype=np.float32)[:, None]
     info = {"title": display, "source": title}
-    loop_start = 0
-    end = total
-    if want_loop:
-        if tid in LOOP_HINTS:
-            hs, hl = LOOP_HINTS[tid]
-            r = {"start": hs - 0.35, "lag": hl, "corr": 0.94, "run": 0.0}
-        else:
-            r = find_loop(stereo, SR, lo, 11025)
-        if r and r["corr"] >= 0.55:
-            loop_start = int((r["start"] + 0.35) * SR)
-            lag = int(r["lag"])
-            end = loop_start + lag
-            # bake crossfade so that sample end-1 -> loop_start is continuous
-            n = min(XFADE, loop_start)
-            w = np.linspace(0.0, 1.0, n, dtype=np.float32)[:, None]
-            seg_end = stereo[end - n:end].copy()
-            seg_pre = stereo[loop_start - n:loop_start]
-            stereo = stereo[:end].copy()
-            stereo[end - n:end] = seg_end * (1.0 - w) + seg_pre * w
-            info.update(loop=True, loop_offset=round(loop_start / SR, 6), loop_length=round(lag / SR, 4),
-                        loop_corr=round(r["corr"], 4), loop_run=round(float(r["run"]), 1))
-        else:
-            # no repeat found: keep whole track, fade the end, loop from start
-            info.update(loop=True, loop_offset=0.0, loop_length=round(total / SR, 3), loop_corr=0.0)
-    # loudness normalisation (RMS on the looped part, peak-safe)
-    body = stereo[loop_start:end] if end > loop_start else stereo
-    rms = float(np.sqrt(np.mean(body ** 2)) + 1e-9)
+    rms = float(np.sqrt(np.mean(stereo ** 2)) + 1e-9)
     gain = 10 ** (TARGET_RMS_DB / 20) / rms
     peak = float(np.max(np.abs(stereo))) * gain
     if peak > 0.98:
@@ -119,13 +108,12 @@ def process(tid: str, catalog: dict):
         wav = Path(td) / "t.wav"
         write_wav(wav, stereo)
         ogg = OUT_DIR / f"{tid}.ogg"
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(wav), "-c:a", "libvorbis", "-q:a", "5", str(ogg)],
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(wav), "-c:a", "libvorbis", "-q:a", "3", str(ogg)],
                        check=True)
     info["file"] = f"res://assets/music/{tid}.ogg"
     info["duration"] = round(len(stereo) / SR, 3)
     catalog[tid] = info
-    print(f"{tid:16s} loop@{info.get('loop_offset', 0):7.2f}s len {info.get('loop_length', 0):7.2f}s "
-          f"corr {info.get('loop_corr', 0):.3f} gain {info['gain_db']:+.1f} dB")
+    print(f"{tid:16s} {info['duration']:7.2f}s (cut {a / SR:.2f}..{b / SR:.2f}) gain {info['gain_db']:+.1f} dB")
 
 
 def main():

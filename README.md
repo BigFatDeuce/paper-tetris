@@ -44,7 +44,7 @@
 - **9 Paper Mario stages:** Shy Guy's Toy Box, Pleasant Path, Flower Fields, Dry Dry Desert, Jade Jungle, Mt. Lavalava, Shiver Mountain, Shooting Star Summit and Bowser's Castle, where Bowser himself watches you play (and hates your Tetrises). In *Journey* mode you travel to a new stage every 2 levels.
 - **The Shy Guy troupe:** red, blue, green, pink, yellow and Anti Guys, with rare guest appearances from Groove Guy, Sky Guy, Spy Guy, Stilt Guy, Pyro Guy, Spear Guy, Traffic Guy and General Guy's parade.
 - **Paper Mario juice:** NICE / GOOD / SUPER! words, the 100% burst on a Perfect Clear, coins flying into your score, dust clouds, spinning stars, hearts from the crowd and paper confetti everywhere.
-- **The original soundtrack**, looped seamlessly, with a jukebox to pick your game music, and a sound test to remix every effect from the original samples.
+- **The original soundtrack**: every stage alternates two themes from the same corner of the Mushroom Kingdom, with soft crossfades; a jukebox picks your game music, and a sound test remixes every effect from the original samples.
 - **Old-school list menus** that work with keyboard, mouse, gamepad and touch.
 - **English and French**, switchable at any time in *Options*.
 - **Comfort options:** screen shake Off / Light / Full, confetti on/off, crowd size from *None* to *Party*, or *Random* for a new troupe on every screen.
@@ -111,7 +111,7 @@ The game is a [Godot 4.7](https://godotengine.org/) project (GDScript, *Compatib
 
 The GIF above and the 45-second trailer are recorded in-engine with Godot's Movie Maker: `sh tools/record_trailer.sh <footage dir>` films every shot (a small showcase bot plays), renders the captions with the game's own paper windows and cuts everything with ffmpeg ([`tools/make_trailer.py`](tools/make_trailer.py)).
 
-The ready-to-use game assets are in `game/assets/`. The Python scripts in [`tools/`](tools/) rebuild them (sprites, fonts, music loops, sound effects, the 3D-rendered stages and the icon) from the original ripped sheets, soundtrack and models. Those raw rips aren't part of this repository.
+The ready-to-use game assets are in `game/assets/`. The Python scripts in [`tools/`](tools/) rebuild them (sprites, fonts, music, sound effects, the 3D-rendered stages and the icon) from the original ripped sheets, soundtrack and models. Those raw rips aren't part of this repository.
 
 ```
 game/               Godot project
@@ -121,7 +121,7 @@ game/               Godot project
   src/stage/        PM64 dioramas, layered in front of and behind the board
   src/menu/         title, menus, records, options, credits
   src/autoload/     settings, saves, input, audio, languages, scene router
-  data/             music loops, sound effects, characters, translations
+  data/             music, sound effects, characters, translations
   tests/            headless test suite and screenshot harness
 tools/              asset pipelines (Python + a small Godot 3D renderer)
 docs/               README images
@@ -153,7 +153,7 @@ If you are a rights holder and want something removed, please [open an issue](ht
 
 - **Jouer dans le navigateur :** <https://paper-tetris.holy-c.men/> (PC, téléphone et tablette en paysage, avec commandes tactiles).
 - **Télécharger** (Windows, Linux, macOS, Android) : [dernière version](https://github.com/BigFatDeuce/paper-tetris/releases/latest).
-- **5 modes** (Marathon, Sprint 40 lignes, Ultra, Infini, Entraînement), **9 décors** (dont le château de Bowser), la bande originale de Paper Mario, des records sauvegardés sur l'appareil.
+- **5 modes** (Marathon, Sprint 40 lignes, Ultra, Infini, Entraînement), **9 décors** (dont le château de Bowser), la bande originale de Paper Mario (deux thèmes par décor, enchaînés en fondu), des records sauvegardés sur l'appareil.
 - **Français et anglais**, au choix dans *Options → Langue*. Les secousses d'écran se règlent (Non / Légères / Fortes) dans *Options → Affichage et effets* ou dans le menu pause.
 - Clavier, souris, manette (A valide, B revient) et écran tactile.
 

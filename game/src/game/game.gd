@@ -70,7 +70,7 @@ func _ready() -> void:
 	_build()
 	_connect_engine()
 	Settings.changed.connect(_on_setting)
-	Audio.play_music(_music_for(stage_id), 0.8)
+	Audio.play_playlist(_playlist_for(stage_id), 0.8)
 	Events.emit_event(&"stage", {"id": stage_id})
 	_run_intro()
 
@@ -187,6 +187,15 @@ func _music_for(id: String) -> String:
 		GameRules.Mode.SPRINT: return "mode_sprint"
 		GameRules.Mode.ULTRA: return "mode_ultra"
 	return str(StageLibrary.get_stage(id)["music"])
+
+
+## The stage's two themes, played one after the other (a chosen track alone).
+func _playlist_for(id: String) -> Array:
+	var first := _music_for(id)
+	var st: Dictionary = StageLibrary.get_stage(id)
+	if first == str(st["music"]) and st.has("music2"):
+		return [first, str(st["music2"])]
+	return [first]
 
 
 # ------------------------------------------------------------------ flow
@@ -352,7 +361,7 @@ func _on_level(level: int) -> void:
 			stage_id = next
 			stage.change_to(next)
 			director.change_stage(next)
-			Audio.play_music(_music_for(next), 1.6)
+			Audio.play_playlist(_playlist_for(next), 1.6)
 			Events.emit_event(&"stage", {"id": next})
 
 

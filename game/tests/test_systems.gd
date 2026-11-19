@@ -96,9 +96,10 @@ func test_data_files() -> void:
 	check(music.size() >= 10, "music catalogue loaded (%d)" % music.size())
 	for id: String in music.keys():
 		check(ResourceLoader.exists(music[id]["file"]), "music file exists: %s" % id)
-		check(float(music[id].get("loop_offset", 0.0)) < float(music[id].get("duration", 1.0)), "loop offset inside track %s" % id)
+		check(float(music[id].get("duration", 0.0)) > Audio.TRACK_XFADE * 2.0, "track %s longer than its crossfades" % id)
 	for id: String in Audio.sfx_catalog.keys():
 		check(ResourceLoader.exists(Audio.sfx_catalog[id]["file"]), "sfx file exists: %s" % id)
 	for st: String in StageLibrary.ids():
 		var d: Dictionary = StageLibrary.get_stage(st)
 		check(music.has(d["music"]), "stage %s music exists" % st)
+		check(music.has(d.get("music2", "")), "stage %s second theme exists" % st)

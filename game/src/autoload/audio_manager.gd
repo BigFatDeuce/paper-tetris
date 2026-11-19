@@ -1,10 +1,13 @@
 extends Node
-## Music (two players, crossfades, seamless loops from data/music.json) and
-## sound effects (voice pool, data/sfx.json). Separate Music / SFX buses.
+## Music (two players, crossfades, data/music.json) and sound effects (voice
+## pool, data/sfx.json). Separate Music / SFX buses.
+## Music never loops inside a file: each track plays whole, then crossfades
+## into the next one of its playlist (a stage's two themes, or itself).
 
 const MUSIC_DATA := "res://data/music.json"
 const SFX_DATA := "res://data/sfx.json"
 const SFX_VOICES := 14
+const TRACK_XFADE := 4.0   # s, crossfade from one track into the next
 
 var music_catalog := {}
 var sfx_catalog := {}
@@ -21,6 +24,9 @@ var _lowpass: AudioEffectLowPassFilter
 var _music_bus := 0
 var _sfx_bus := 0
 var _last_play := {}
+var _playlist: Array = []
+var _pl_index := 0
+var _elapsed := 0.0
 
 
 func _ready() -> void:
@@ -110,35 +116,66 @@ func _music_stream(id: String) -> AudioStream:
 		return null
 	var st: AudioStream = load(info["file"])
 	if st is AudioStreamOggVorbis:
-		var ogg := st as AudioStreamOggVorbis
-		ogg.loop = bool(info.get("loop", true))
-		ogg.loop_offset = float(info.get("loop_offset", 0.0))
+		(st as AudioStreamOggVorbis).loop = false
 	_streams[id] = st
 	return st
 
 
-## Crossfades to music `id`. Does nothing if it is already playing.
+## Crossfades to music `id`, which then crossfades into itself when it ends.
+## Does nothing if it is already playing.
 func play_music(id: String, fade := 1.0, restart := false) -> void:
-	if id == current_music and not restart and _players[_active].playing:
+	play_playlist([id], fade, restart)
+
+
+## Crossfades to the first track of `ids`; each track then crossfades into
+## the next, round and round. Does nothing if this playlist is already on.
+func play_playlist(ids: Array, fade := 1.0, restart := false) -> void:
+	var known := ids.filter(func(i): return music_catalog.has(str(i)))
+	if known.is_empty():
+		push_warning("music not found: %s" % [ids])
 		return
+	ids = known
+	if ids == _playlist and current_music != "" and not restart and _players[_active].playing:
+		return
+	_playlist = ids
+	_pl_index = 0
+	_start_track(str(ids[0]), fade, false)
+
+
+## `keep_pitch`: the next track of a playlist keeps the danger speed-up.
+func _start_track(id: String, fade: float, keep_pitch := true) -> void:
 	var st := _music_stream(id)
 	if st == null:
 		push_warning("music not found: %s" % id)
 		return
+	var pitch := _players[_active].pitch_scale if keep_pitch else 1.0
 	current_music = id
+	_elapsed = 0.0
 	var old := _active
 	_active = 1 - _active
 	var p := _players[_active]
 	p.stream = st
-	p.pitch_scale = 1.0
+	p.pitch_scale = pitch
 	p.volume_db = -40.0 if fade > 0.0 else 0.0
 	p.play()
 	_fade(_active, 0.0, fade)
 	_fade(old, -60.0, fade, true)
 
 
+func _process(delta: float) -> void:
+	if current_music == "" or _playlist.is_empty():
+		return
+	var p := _players[_active]
+	_elapsed += delta * p.pitch_scale
+	var dur := float(music_catalog.get(current_music, {}).get("duration", 0.0))
+	if (dur > 0.0 and _elapsed >= dur - TRACK_XFADE) or (_elapsed > 1.0 and not p.playing):
+		_pl_index = (_pl_index + 1) % _playlist.size()
+		_start_track(str(_playlist[_pl_index]), TRACK_XFADE)
+
+
 func stop_music(fade := 1.0) -> void:
 	current_music = ""
+	_playlist = []
 	_fade(_active, -60.0, fade, true)
 
 
