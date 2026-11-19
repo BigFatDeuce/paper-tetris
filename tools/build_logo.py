@@ -79,7 +79,7 @@ def paper_sheet() -> Image.Image:
 # (src box on the 190x110 sheet); T, I and S are drawn the way PAPER is:
 # thin hand-drawn ink lines (outline polygons in sheet pixels, 37 px tall
 # like PAPER's letters) on the bare paper.
-COPIED = {"E": (104, 7, 128, 48), "R": (126, 7, 155, 48)}
+COPIED = {"E": (100, 6, 132, 48), "R": (126, 6, 156, 48)}
 DRAWN = {
     "T": [(0, 1), (23, 0), (23.5, 9), (15.5, 9.5), (16, 37), (7.5, 37), (8, 9.5), (0, 10)],
     "I": [(0, 0.5), (9.5, 0), (10, 37), (0.5, 37)],
@@ -100,6 +100,22 @@ def _letter_mask(patch_ink: np.ndarray) -> np.ndarray:
     return ff[1:-1, 1:-1] != 2
 
 
+def _clean_mask(ink: np.ndarray, r: int = 2) -> np.ndarray:
+    """The letter alone: its light body (biggest enclosed paper blob), holes
+    filled, grown by its own outline width. Ink from neighbouring PAPER
+    letters or paper creases that only touches the patch edges is dropped."""
+    inside = _letter_mask(ink)
+    body = (inside & ~ink).astype(np.uint8)
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(body, connectivity=4)
+    if n > 1:
+        big = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+        body = (lab == big).astype(np.uint8)
+    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * r + 1, 2 * r + 1))
+    grown = cv2.dilate(body, k) > 0
+    grown = _letter_mask(grown)          # fill the counters (R's eye)
+    return grown & (inside | ink)
+
+
 def draw_word(a: np.ndarray, src: np.ndarray, ss: int = 8):
     rgb_src = src[:, :, :3].astype(np.float32)
     lum_src = rgb_src.mean(axis=2)
@@ -116,8 +132,7 @@ def draw_word(a: np.ndarray, src: np.ndarray, ss: int = 8):
             x0, y0, x1, y1 = COPIED[ch]
             patch = rgb_src[y0:y1, x0:x1]
             ink = lum_src[y0:y1, x0:x1] < 110
-            m = _letter_mask(ink)
-            m = cv2.dilate(m.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0
+            m = _clean_mask(ink)
             mf = cv2.GaussianBlur(m.astype(np.float32), (3, 3), 0.6)[:, :, None]
             dy = WORD_Y - 2 + (y0 - 7)
             reg = out[dy:dy + (y1 - y0), x:x + (x1 - x0)]
