@@ -140,6 +140,7 @@ func _build() -> void:
 	# decor zones: the ground on both sides of the board + window tops
 	var zones := [Rect2(40, 930, 380, 110), Rect2(1500, 930, 380, 110)]
 	director.setup(stage_id, zones, hud.platform_rects())
+	director.hide_rect = Rect2(WELL_POS - Vector2(22, 22), well + Vector2(44, 44))
 
 	add_child(TouchControls.new())
 	pause_menu = PauseMenu.new()

@@ -15,6 +15,9 @@ var platforms: Array = []   # Array[Rect2] windows the actors may stand on
 var actors: Array = []      # the crowd
 var mood := "calm"          # calm, nervous, sad, party
 var in_menu := false
+## The well: whoever walks (or flies) behind it fades out, so no Shy Guy
+## shows through the stacked pieces. Empty outside a game.
+var hide_rect := Rect2()
 
 var _rare_t := 0.0
 var _level := 2             # crowd size index, rolled per scene in Random mode
@@ -467,6 +470,8 @@ func _on_event(kind: StringName, data: Dictionary) -> void:
 # ----------------------------------------------------------------- rares
 
 func _process(delta: float) -> void:
+	if hide_rect.has_area():
+		_fade_behind_well()
 	if _parade or zones.is_empty():
 		return
 	_rare_t -= delta
@@ -474,6 +479,20 @@ func _process(delta: float) -> void:
 		_rare_t = randf_range(10.0, 22.0) if in_menu else randf_range(22.0, 45.0)
 		if _level > 0:
 			_rare_event()
+
+
+func _fade_behind_well() -> void:
+	const SOFT := 70.0   # px over which an actor fades as it slips behind
+	for c in get_children():
+		if not c is Actor:
+			continue
+		var a := c as Actor
+		var top := a.position.y - a.height_px()
+		if a.position.y < hide_rect.position.y or top > hide_rect.end.y:
+			a.modulate.a = 1.0
+			continue
+		var d := maxf(hide_rect.position.x - a.position.x, a.position.x - hide_rect.end.x)
+		a.modulate.a = clampf(d / SOFT, 0.0, 1.0)
 
 
 func _rare_event() -> void:
