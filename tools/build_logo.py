@@ -12,7 +12,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw, ImageFilter
 
 from sprites_lib import SRC
 
@@ -22,8 +22,6 @@ SHEET = SRC / "Nintendo 64 - Paper Mario - Miscellaneous - Title Screen.png"
 BOX = (300, 0, 490, 110)      # the Paper Mario logo on the title screen sheet
 SPLIT = 46                    # rows below this hold "MARIO"
 SCALE = 4
-FONT = Path("C:/Windows/Fonts/ariblk.ttf")
-WORD_BOX = (26, 54, 166, 87)  # where TETRIS goes on the 190x110 sheet (MARIO's place)
 INK = (36, 35, 39)            # PAPER's outline colour, measured on the sheet
 TETRIS_W = 0.80               # TETRIS width relative to the sheet
 TETRIS_Y = 0.70               # TETRIS centre, relative to the sheet height
@@ -32,6 +30,7 @@ TETRIS_Y = 0.70               # TETRIS centre, relative to the sheet height
 def paper_sheet() -> Image.Image:
     im = Image.open(SHEET).convert("RGBA").crop(BOX)
     a = np.array(im)
+    src = a.copy()
     rgb = a[:, :, :3].astype(np.int16)
     alpha = a[:, :, 3]
     sat = rgb.max(axis=2) - rgb.min(axis=2)
@@ -60,7 +59,7 @@ def paper_sheet() -> Image.Image:
     fixed = cv2.inpaint(bgr, (mask | dark).astype(np.uint8) * 255, 4, cv2.INPAINT_TELEA)
     rgb_fixed = cv2.cvtColor(fixed, cv2.COLOR_BGR2RGB)
     a[:, :, :3] = np.where(mask[:, :, None], rgb_fixed, a[:, :, :3])
-    draw_word(a, "TETRIS")
+    draw_word(a, src)
     im = Image.fromarray(a, "RGBA")
     # upscale (premultiplied, so the transparent border does not go dark)
     pm = np.array(im).astype(np.float32) / 255.0
@@ -76,55 +75,79 @@ def paper_sheet() -> Image.Image:
     return out.filter(ImageFilter.UnsharpMask(radius=2, percent=60, threshold=2))
 
 
-def draw_word(a: np.ndarray, word: str, ss: int = 8):
-    """Draws `word` onto the sheet pixels like PAPER: chunky letters, each a
-    little tilted and off the line as if cut by hand, a ~2 px black outline
-    and the paper itself (slightly whitened) as the fill."""
-    x0, y0, x1, y1 = WORD_BOX
-    bw, bh = (x1 - x0) * ss, (y1 - y0) * ss
-    font = ImageFont.truetype(str(FONT), int(bh * 1.32))
-    rng = np.random.default_rng(64)
-    glyphs = []
-    for ch in word:
-        box = font.getbbox(ch)
-        g = Image.new("L", (box[2] - box[0] + 8 * ss, box[3] - box[1] + 8 * ss), 0)
-        ImageDraw.Draw(g).text((4 * ss - box[0], 4 * ss - box[1]), ch, font=font, fill=255)
-        g = g.rotate(float(rng.uniform(-4, 4)), resample=Image.BICUBIC, expand=False)
-        glyphs.append(g)
-    gap = int(1.5 * ss)
-    total = sum(g.width - 8 * ss for g in glyphs) + gap * (len(glyphs) - 1)
-    k = min(1.0, bw / total)
-    layer = Image.new("L", (bw + 16 * ss, bh + 16 * ss), 0)
-    x = 8 * ss + (bw - total * k) / 2
-    for g in glyphs:
-        gs = g.resize((max(1, int(g.width * k)), max(1, int(g.height * k * (bh / (g.height - 8 * ss)) / k))), Image.LANCZOS)
-        dy = int(rng.uniform(-1.2, 1.2) * ss)
-        layer.paste(gs, (int(x - 4 * ss * k), 8 * ss - 4 * ss + dy), gs)
-        x += (g.width - 8 * ss) * k + gap
-    body = np.asarray(layer).astype(np.float32) / 255.0
-    # hand-cut edges: the outline wobbles a little
-    outline = np.asarray(layer.filter(ImageFilter.MaxFilter(2 * int(2.2 * ss) + 1))).astype(np.float32) / 255.0
-    noise = np.asarray(Image.fromarray((rng.random((outline.shape[0] // ss + 1, outline.shape[1] // ss + 1)) * 255)
-                                       .astype(np.uint8)).resize((outline.shape[1], outline.shape[0]), Image.BICUBIC)).astype(np.float32) / 255.0
-    outline = np.clip(outline * (0.85 + 0.3 * noise), 0, 1)
-    # down to the sheet's pixels
-    def down(m):
-        w, h = m.shape[1] // ss, m.shape[0] // ss
-        return m[:h * ss, :w * ss].reshape(h, ss, w, ss).mean(axis=(1, 3))
-    body, outline = down(body), down(outline)
-    oy, ox = y0 - 8, x0 - 8
-    h, w = body.shape
-    reg = a[oy:oy + h, ox:ox + w]
-    alpha = reg[:, :, 3:4].astype(np.float32) / 255.0
-    rgb = reg[:, :, :3].astype(np.float32)
-    ink_a = np.clip(outline * 1.15, 0, 1)[:, :, None] * (alpha > 0.5)
-    rgb = rgb * (1 - ink_a) + np.array(INK, np.float32) * ink_a
-    # the fill: the paper underneath, whitened and cooled like PAPER's
-    fill = np.clip(body * 1.2 - 0.1, 0, 1)[:, :, None] * (alpha > 0.5)
-    paper = reg[:, :, :3].astype(np.float32)
-    lit = paper * 0.55 + np.array([214, 214, 222], np.float32) * 0.45
-    rgb = rgb * (1 - fill) + lit * fill
-    reg[:, :, :3] = np.clip(rgb, 0, 255).astype(np.uint8)
+# TETRIS on the sheet. E and R are lifted pixel for pixel from PAPER
+# (src box on the 190x110 sheet); T, I and S are drawn the way PAPER is:
+# thin hand-drawn ink lines (outline polygons in sheet pixels, 37 px tall
+# like PAPER's letters) on the bare paper.
+COPIED = {"E": (104, 7, 128, 48), "R": (126, 7, 155, 48)}
+DRAWN = {
+    "T": [(0, 1), (23, 0), (23.5, 9), (15.5, 9.5), (16, 37), (7.5, 37), (8, 9.5), (0, 10)],
+    "I": [(0, 0.5), (9.5, 0), (10, 37), (0.5, 37)],
+    "S": [(0.5, 0.5), (21.5, 0), (21, 8.5), (9.5, 8.5), (9.5, 13.5), (21, 13.5), (22, 37), (0, 37),
+          (0, 28.5), (12.5, 28.5), (12, 22), (0.5, 22)],
+}
+WORD = [("T", 0), ("E", 1), ("T", 1), ("R", 1), ("I", 2), ("S", 2)]   # letter, gap before
+WORD_Y = 51
+
+
+def _letter_mask(patch_ink: np.ndarray) -> np.ndarray:
+    """Inside of a hand-drawn letter: everything the outside cannot reach."""
+    free = (~patch_ink).astype(np.uint8)
+    h, w = free.shape
+    pad = np.pad(free, 1, constant_values=1)
+    ff = pad.copy()
+    cv2.floodFill(ff, np.zeros((h + 4, w + 4), np.uint8), (0, 0), 2)
+    return ff[1:-1, 1:-1] != 2
+
+
+def draw_word(a: np.ndarray, src: np.ndarray, ss: int = 8):
+    rgb_src = src[:, :, :3].astype(np.float32)
+    lum_src = rgb_src.mean(axis=2)
+    widths = {ch: COPIED[ch][2] - COPIED[ch][0] if ch in COPIED else
+              int(np.ceil(max(x for x, _ in DRAWN[ch]))) + 1 for ch in COPIED.keys() | DRAWN.keys()}
+    total = sum(widths[ch] + gap for ch, gap in WORD)
+    x = (a.shape[1] - total) // 2 + 2
+    rng = np.random.default_rng(11)
+    out = a[:, :, :3].astype(np.float32)
+    inside_alpha = a[:, :, 3] > 200
+    for ch, gap in WORD:
+        x += gap
+        if ch in COPIED:
+            x0, y0, x1, y1 = COPIED[ch]
+            patch = rgb_src[y0:y1, x0:x1]
+            ink = lum_src[y0:y1, x0:x1] < 110
+            m = _letter_mask(ink)
+            m = cv2.dilate(m.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0
+            mf = cv2.GaussianBlur(m.astype(np.float32), (3, 3), 0.6)[:, :, None]
+            dy = WORD_Y - 2 + (y0 - 7)
+            reg = out[dy:dy + (y1 - y0), x:x + (x1 - x0)]
+            out[dy:dy + (y1 - y0), x:x + (x1 - x0)] = reg * (1 - mf) + patch * mf
+        else:
+            pts = DRAWN[ch]
+            w = widths[ch] + 4
+            h = 37 + 4
+            layer = Image.new("L", (w * ss, h * ss), 0)
+            # wobbly hand-drawn edges: every side cut in ~3 px steps, each nudged
+            ring = pts + [pts[0]]
+            jit = []
+            for (ax, ay), (bx, by) in zip(ring, ring[1:]):
+                n = max(1, int(np.hypot(bx - ax, by - ay) / 3))
+                for k in range(n):
+                    t = k / n
+                    jit.append(((ax + (bx - ax) * t + 2 + rng.uniform(-0.45, 0.45)) * ss,
+                                (ay + (by - ay) * t + 2 + rng.uniform(-0.45, 0.45)) * ss))
+            d = ImageDraw.Draw(layer)
+            for (ax, ay), (bx, by) in zip(jit, jit[1:] + jit[:1]):
+                d.line([(ax, ay), (bx, by)], fill=255, width=int(rng.uniform(1.4, 1.9) * ss))
+            m = np.asarray(layer).astype(np.float32) / 255.0
+            m = m.reshape(h, ss, w, ss).mean(axis=(1, 3))
+            m = np.clip(m * 1.25, 0, 1)[:, :, None]
+            dy = WORD_Y - 2 + int(round(rng.uniform(-0.8, 0.8)))
+            reg = out[dy:dy + h, x - 2:x - 2 + w]
+            out[dy:dy + h, x - 2:x - 2 + w] = reg * (1 - m) + np.array(INK, np.float32) * m
+        x += widths[ch]
+    out = np.where(inside_alpha[:, :, None], out, a[:, :, :3].astype(np.float32))
+    a[:, :, :3] = np.clip(out, 0, 255).astype(np.uint8)
 
 
 def main():
