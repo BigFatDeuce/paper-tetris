@@ -16,8 +16,6 @@ var ui: CanvasLayer
 var logo: Node2D
 var _logo_paper: Sprite2D
 const PAPER_Y := -50.0
-const TETRIS_Y := 50.0
-var _logo_tetris: Sprite2D
 var _press: Control
 var _footer: Label
 var _stack: Array = []
@@ -50,18 +48,13 @@ func _ready() -> void:
 	logo = Node2D.new()
 	ui.add_child(logo)
 	_logo_paper = Sprite2D.new()
+	# one sheet: PAPER and TETRIS drawn on the same crumpled paper
 	_logo_paper.texture = load("res://assets/ui/logo_paper.png")
 	# the original Paper Mario sheet (MARIO painted out), TETRIS laid on it
 	_logo_paper.position = Vector2(0, PAPER_Y)
 	_logo_paper.scale = Vector2.ONE * 1.1
 	_logo_paper.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	logo.add_child(_logo_paper)
-	_logo_tetris = Sprite2D.new()
-	_logo_tetris.texture = load("res://assets/ui/logo_tetris.png")
-	_logo_tetris.position = Vector2(0, TETRIS_Y)
-	_logo_tetris.scale = Vector2.ONE * 0.68
-	_logo_tetris.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	logo.add_child(_logo_tetris)
 
 	# the prompt of the original title screen (French: its COMMENCER PARTIE)
 	var prompt := TextureRect.new()
@@ -144,7 +137,6 @@ func _process(delta: float) -> void:
 	if logo:
 		_logo_paper.rotation = sin(_t * 1.3) * 0.012
 		_logo_paper.position.y = PAPER_Y + sin(_t * 2.0) * 4.0
-		_logo_tetris.position.y = TETRIS_Y + sin(_t * 2.0 + 1.2) * 3.0
 	if phase == Phase.TITLE and _press.modulate.a > 0.0:
 		_press.scale = Vector2.ONE * (1.0 + sin(_t * 4.0) * 0.03)
 		_press.self_modulate.a = 0.55 + 0.45 * absf(sin(_t * 2.2))

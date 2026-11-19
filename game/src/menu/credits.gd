@@ -102,7 +102,7 @@ func _ready() -> void:
 	for l: Array in LINES:
 		match l[0]:
 			"logo":
-				# the title logo: TETRIS laid over the crumpled PAPER sheet
+				# the title logo: PAPER TETRIS on its crumpled sheet
 				var box := Control.new()
 				box.custom_minimum_size = Vector2(740, 360)
 				var paper := TextureRect.new()
@@ -111,12 +111,6 @@ func _ready() -> void:
 				paper.size = Vector2(608, 352)
 				paper.position = Vector2((740 - 608) * 0.5, 4)
 				box.add_child(paper)
-				var tet := TextureRect.new()
-				tet.texture = load("res://assets/ui/logo_tetris.png")
-				tet.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-				tet.size = Vector2(518, 113)
-				tet.position = Vector2((740 - 518) * 0.5, 4 + 352 * 0.70 - 56)
-				box.add_child(tet)
 				_scroll.add_child(box)
 			"gap":
 				var c := Control.new()

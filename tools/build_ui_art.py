@@ -228,48 +228,6 @@ def fill_holes(mask):
     return Image.fromarray(np.uint8(~outside) * 255, "L")
 
 
-def logo():
-    word = "TETRIS"
-    colors = ["Z", "L", "O", "S", "I", "T"]
-    cell = 30
-    gap = 1
-    cols = sum(len(LETTERS[c][0]) for c in word) + gap * (len(word) - 1)
-    pad = 26
-    w = cols * cell + pad * 2
-    h = 5 * cell + pad * 2
-    layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    mask = Image.new("L", (w, h), 0)
-    md = ImageDraw.Draw(mask)
-    x = pad
-    tiles = {k: block(PIECES[k], cell) for k in set(colors)}
-    for ch, ck in zip(word, colors):
-        g = LETTERS[ch]
-        for gy, row in enumerate(g):
-            for gx, c in enumerate(row):
-                if c == "#":
-                    px, py = x + gx * cell, pad + gy * cell
-                    layer.alpha_composite(tiles[ck], (px, py))
-                    md.rounded_rectangle([px, py, px + cell - 1, py + cell - 1], 6, fill=255)
-        x += (len(g[0]) + gap) * cell
-    # sticker backing: dilated mask, cream paper with dark outline
-    back = mask.filter(ImageFilter.MaxFilter(23)).filter(ImageFilter.GaussianBlur(2)).point(lambda v: 255 if v > 110 else 0)
-    back = fill_holes(back)
-    outline = back.filter(ImageFilter.MaxFilter(7))
-    shadow = outline.filter(ImageFilter.GaussianBlur(7))
-    out = Image.new("RGBA", (w + 24, h + 24), (0, 0, 0, 0))
-    sh = Image.new("RGBA", (w, h), (50, 25, 10, 0))
-    sh.putalpha(shadow.point(lambda v: int(v * 0.55)))
-    out.alpha_composite(sh, (14, 16))
-    ol = Image.new("RGBA", (w, h), (60, 34, 18, 255))
-    ol.putalpha(outline)
-    out.alpha_composite(ol, (2, 2))
-    bk = Image.new("RGBA", (w, h), (250, 243, 222, 255))
-    bk.putalpha(back)
-    out.alpha_composite(apply_grain(bk, 6, 5), (2, 2))
-    out.alpha_composite(layer, (2, 2))
-    out.save(OUT / "logo_tetris.png")
-
-
 # ------------------------------------------------------------------ misc
 
 def misc():
@@ -320,7 +278,6 @@ def main():
     tab("8a5cc8", name="tab_purple")
     board_frame()
     well_shading()
-    logo()
     misc()
     print("ui art ok")
 
