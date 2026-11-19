@@ -3,7 +3,7 @@ extends RefCounted
 ## Every diorama stage: its art folder, music, ambience and who lives there.
 ## Add a stage: render its layers into assets/stages/<id>/ and add an entry.
 
-const ORDER := ["toybox", "meadow", "flowers", "desert", "jungle", "volcano", "snow", "stars"]
+const ORDER := ["toybox", "meadow", "flowers", "desert", "jungle", "volcano", "snow", "stars", "bowser"]
 
 const STAGES := {
 	"toybox": {
@@ -61,6 +61,15 @@ const STAGES := {
 		"crowd": ["shyguy_blue", "shyguy_yellow", "shyguy_pink", "shyguy_red", "shyguy_green"],
 		"specials": ["sky_guy", "groove_guy", "general_guy"],
 		"rare": ["anti_guy", "stilt_guy", "spy_guy"],
+	},
+	"bowser": {
+		"name": "Bowser's Castle", "music": "stage_bowser",
+		"ambient": "embers", "tint": Color(1, 0.94, 0.92),
+		"crowd": ["shyguy_red", "pyro_guy", "shyguy_blue", "shyguy_green"],
+		"specials": ["spy_guy", "spear_guy", "groove_guy"],
+		"rare": ["anti_guy", "general_guy"],
+		# the master of the castle watches from the back (src/stage/bowser.gd)
+		"boss": {"pos": Vector2(1715, 790)},
 	},
 }
 

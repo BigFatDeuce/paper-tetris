@@ -30,6 +30,8 @@ var _ready_frames := 2
 var _scroll := 0
 var _hhold_dir := 0
 var _hhold_t := 0.0
+## stick directions currently tilted past the deadzone (one step per tilt)
+var _stick := {}
 var _arrow_up: Label
 var _arrow_down: Label
 var _col_w := 0.0       # value column width: grows to the widest value seen
@@ -276,8 +278,8 @@ func _process(delta: float) -> void:
 		dir = -1
 	if dir != 0 and dir == _hold_dir:
 		_hold_t += delta
-		if _hold_t > 0.38:
-			_hold_t -= 0.085
+		if _hold_t > 0.4:
+			_hold_t -= 0.13
 			_step(dir)
 	else:
 		_hold_dir = dir
@@ -304,6 +306,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_echo():
 		return
+	# an analog stick sends a stream of motion events while tilted: only the
+	# tilt itself moves the cursor, holding it repeats from _process
+	if event is InputEventJoypadMotion:
+		var fresh := false
+		for a: String in ["ui_down", "ui_up", "ui_left", "ui_right"]:
+			if event.is_action(a):
+				var on := event.is_action_pressed(a)
+				if on and not _stick.get(a, false):
+					fresh = true
+				_stick[a] = on
+		if not fresh:
+			return
 	if event.is_action_pressed("ui_down"):
 		_step(1)
 	elif event.is_action_pressed("ui_up"):

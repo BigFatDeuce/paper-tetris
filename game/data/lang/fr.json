@@ -157,6 +157,8 @@
   "Calm": "Calme",
   "Lively": "Animé",
   "Party": "La fête",
+  "Random": "Au hasard",
+  "How many Shy Guys hang around. Random picks a new troupe every time. Purely for show!": "Combien de Maskass traînent dans le coin. Au hasard change la troupe à chaque fois. Juste pour le spectacle !",
   "DISPLAY": "AFFICHAGE",
   "Fullscreen": "Plein écran",
   "V-Sync": "Synchro verticale",
@@ -265,5 +267,6 @@
   "Jade Jungle": "Jungle Jade",
   "Mt. Lavalava": "Mont Lavalave",
   "Shiver Mountain": "Mont Frisson",
-  "Shooting Star Summit": "Sommet Étoile Filante"
+  "Shooting Star Summit": "Sommet Étoile Filante",
+  "Bowser's Castle": "Château de Bowser"
 }

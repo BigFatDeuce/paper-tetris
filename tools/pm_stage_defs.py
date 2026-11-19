@@ -320,4 +320,34 @@ def stage_defs() -> dict:
             card(frost, FL, FZ, 0.018, "front"), card(frost, FR, FZ, 0.018, "front", flip=True),
         ],
     }
+    # Bowser's Castle: dark stone, a lava moat under a red sky, battlements
+    # and towers of castle bricks (Bowser himself stands on the right, see
+    # game/src/stage/bowser.gd)
+    cfloor = recolor("stones.bmp", "castle_floor.png", ["#100c10", "#2a2026", "#463840", "#66545a"], gamma=1.8)
+    brick = recolor("bricks.png", "castle_brick.png", ["#09070b", "#1a1419", "#2d2329", "#463840"], gamma=2.0)
+    merlon = (0.026, 0.026, 0.03)
+    defs["bowser"] = {
+        "bg": "dark_red", "bg_y": -420, "camera": PP_CAM,
+        "items": [
+            floor(cfloor, tile=TILE * 0.6),
+            band(lava, -0.1, 0.11, 0.05),
+            # the curtain wall beyond the moat, with its battlements
+            box(brick, 0, -0.2, (1.4, 0.045, 0.03), uv=[24, 1]),
+            *[box(brick, x, -0.2, merlon, y=0.045 + merlon[1] / 2)
+              for x in [-0.66 + 0.06 * i for i in range(23)]],
+            # towers
+            box(brick, -0.34, -0.16, (0.085, 0.26, 0.085), rot=6, uv=[2, 6]),
+            *[box(brick, -0.34 + dx, -0.16 + dz, (0.024, 0.024, 0.024), y=0.272)
+              for dx, dz in [(-0.03, -0.03), (0.03, -0.03), (-0.03, 0.03), (0.03, 0.03)]],
+            box(brick, 0.3, -0.17, (0.075, 0.2, 0.075), rot=-8, uv=[2, 5]),
+            *[box(brick, 0.3 + dx, -0.17 + dz, (0.022, 0.022, 0.022), y=0.211)
+              for dx, dz in [(-0.026, -0.026), (0.026, -0.026), (-0.026, 0.026), (0.026, 0.026)]],
+            # broken pillars and rubble on this side of the moat
+            box(brick, -0.26, -0.01, (0.035, 0.07, 0.035), rot=18, uv=[1, 2]),
+            box(brick, -0.22, 0.07, (0.03, 0.02, 0.03), rot=-25),
+            box(cfloor, -0.29, 0.09, (0.03, 0.018, 0.025), rot=40),
+            box(brick, 0.17, 0.08, (0.028, 0.018, 0.028), rot=30),
+            box(brick, FL - 0.01, FZ, (0.024, 0.016, 0.02), "front", rot=-20),
+        ],
+    }
     return defs

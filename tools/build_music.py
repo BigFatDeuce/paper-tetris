@@ -34,6 +34,7 @@ TRACKS = {
     "stage_volcano": ("The Burning Hot Volcano Cavern", "Burning Hot Volcano Cavern", True),
     "stage_snow": ("Shiver Snowfield", "Shiver Snowfield", True),
     "stage_stars": ("Shooting Star Summit", "Shooting Star Summit", True),
+    "stage_bowser": ("The Terrible Bowser's Castle", "The Terrible Bowser's Castle", True),
     "mode_sprint": ("A Shy Guy Riot - There's Trouble in the City!", "A Shy Guy Riot!", True),
     "mode_ultra": ("Fall in Step and Let's Go", "Fall in Step and Let's Go", True),
     "results_clear": ("Now That That's Over With...", "Now That That's Over With...", True),
@@ -51,7 +52,13 @@ TRACKS = {
     "extra_shiver": ("Snow Falls on Shiver City", "Snow Falls on Shiver City", True),
     "extra_beginning": ("It's the Beginning!", "It's the Beginning!", True),
     "extra_train": ("Mt. Rugged's Pretty Rugged", "Mt. Rugged's Pretty Rugged", True),
+    "extra_bowser": ("Bowser, My Old Enemy!", "Bowser, My Old Enemy!", True),
 }
+
+# loops the detector cannot settle on: (loop start s, loop length in samples)
+# "Bowser, My Old Enemy!" repeats every 52.63 s, but the second pass is
+# played a little differently, so its correlation stays around 0.94
+LOOP_HINTS = {"extra_bowser": (16.0, 2321109)}
 
 TARGET_RMS_DB = -17.0
 XFADE = int(0.045 * SR)
@@ -77,7 +84,11 @@ def process(tid: str, catalog: dict):
     loop_start = 0
     end = total
     if want_loop:
-        r = find_loop(stereo, SR, lo, 11025)
+        if tid in LOOP_HINTS:
+            hs, hl = LOOP_HINTS[tid]
+            r = {"start": hs - 0.35, "lag": hl, "corr": 0.94, "run": 0.0}
+        else:
+            r = find_loop(stereo, SR, lo, 11025)
         if r and r["corr"] >= 0.55:
             loop_start = int((r["start"] + 0.35) * SR)
             lag = int(r["lag"])

@@ -107,6 +107,18 @@
   "file": "res://assets/music/stage_stars.ogg",
   "duration": 78.767
  },
+ "stage_bowser": {
+  "title": "The Terrible Bowser's Castle",
+  "source": "The Terrible Bowser's Castle",
+  "loop": true,
+  "loop_offset": 12.076077,
+  "loop_length": 89.3573,
+  "loop_corr": 0.9817,
+  "loop_run": 19.5,
+  "gain_db": -5.58,
+  "file": "res://assets/music/stage_bowser.ogg",
+  "duration": 101.433
+ },
  "mode_sprint": {
   "title": "A Shy Guy Riot!",
   "source": "A Shy Guy Riot - There's Trouble in the City!",
@@ -308,5 +320,17 @@
   "gain_db": -1.87,
   "file": "res://assets/music/extra_train.ogg",
   "duration": 36.369
+ },
+ "extra_bowser": {
+  "title": "Bowser, My Old Enemy!",
+  "source": "Bowser, My Old Enemy!",
+  "loop": true,
+  "loop_offset": 16.0,
+  "loop_length": 52.6329,
+  "loop_corr": 0.94,
+  "loop_run": 0.0,
+  "gain_db": -4.53,
+  "file": "res://assets/music/extra_bowser.ogg",
+  "duration": 68.633
  }
 }

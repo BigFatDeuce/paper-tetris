@@ -113,6 +113,16 @@ func _build(id: String) -> void:
 			_layers.append({"node": holder, "sway": float(l.get("sway", 0.0)), "depth": float(l.get("depth", 0.0))})
 	if _layers.is_empty():
 		_fallback(info)
+	if info.has("boss"):
+		# folds and unfolds with the diorama, behind the Shy Guys
+		var pos: Vector2 = info["boss"]["pos"]
+		var holder := Node2D.new()
+		holder.position = Vector2(0, pos.y)
+		var boss := BowserCameo.new()
+		boss.position = Vector2(pos.x, 0)
+		holder.add_child(boss)
+		_root.add_child(holder)
+		_layers.append({"node": holder, "sway": 0.0, "depth": 0.6})
 	_make_ambient()
 	stage_changed.emit(id)
 

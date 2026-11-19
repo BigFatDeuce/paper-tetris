@@ -41,13 +41,13 @@
 
 - **Strict modern Tetris:** SRS rotation with wall kicks, 7-bag randomizer, hold, ghost piece, up to 5 next pieces, lock delay with move reset, T-Spins (and minis), Back-to-Back, combos, Perfect Clears, adjustable DAS / ARR / soft drop speed.
 - **5 modes:** Marathon (150 lines, 15 levels), Sprint 40 Lines, Ultra (3 minutes), Endless and Practice. Top-10 records are kept on your device.
-- **8 Paper Mario stages:** Shy Guy's Toy Box, Pleasant Path, Flower Fields, Dry Dry Desert, Jade Jungle, Mt. Lavalava, Shiver Mountain and Shooting Star Summit. In *Journey* mode you travel to a new stage every 2 levels.
+- **9 Paper Mario stages:** Shy Guy's Toy Box, Pleasant Path, Flower Fields, Dry Dry Desert, Jade Jungle, Mt. Lavalava, Shiver Mountain, Shooting Star Summit and Bowser's Castle, where Bowser himself watches you play (and hates your Tetrises). In *Journey* mode you travel to a new stage every 2 levels.
 - **The Shy Guy troupe:** red, blue, green, pink, yellow and Anti Guys, with rare guest appearances from Groove Guy, Sky Guy, Spy Guy, Stilt Guy, Pyro Guy, Spear Guy, Traffic Guy and General Guy's parade.
 - **Paper Mario juice:** NICE / GOOD / SUPER! words, the 100% burst on a Perfect Clear, coins flying into your score, dust clouds, spinning stars, hearts from the crowd and paper confetti everywhere.
 - **The original soundtrack**, looped seamlessly, with a jukebox to pick your game music, and a sound test to remix every effect from the original samples.
 - **Old-school list menus** that work with keyboard, mouse, gamepad and touch.
 - **English and French**, switchable at any time in *Options*.
-- **Comfort options:** screen shake Off / Light / Full, confetti on/off, crowd size from *None* to *Party*.
+- **Comfort options:** screen shake Off / Light / Full, confetti on/off, crowd size from *None* to *Party*, or *Random* for a new troupe on every screen.
 
 <p align="center">
   <img src="docs/screenshots/flowers.jpg" width="49%" alt="Coins flying to the score on Flower Fields">
@@ -82,6 +82,7 @@ Grab the build for your system on the [latest release](https://github.com/BigFat
 | Rotate left | Z / Ctrl | B / X | B button |
 | Hold | C / Shift | LB / RB | Z button |
 | Pause | Esc / P | Start | PAUSE |
+| Fullscreen | F11 | Select / Back | — |
 
 In menus: arrows or stick to move, Enter / Space / X / gamepad **A** to confirm, Esc / Z / Backspace / gamepad **B** to go back. Everything can be rebound in *Options → Controls*.
 
@@ -152,7 +153,7 @@ If you are a rights holder and want something removed, please [open an issue](ht
 
 - **Jouer dans le navigateur :** <https://paper-tetris.holy-c.men/> (PC, téléphone et tablette en paysage, avec commandes tactiles).
 - **Télécharger** (Windows, Linux, macOS, Android) : [dernière version](https://github.com/BigFatDeuce/paper-tetris/releases/latest).
-- **5 modes** (Marathon, Sprint 40 lignes, Ultra, Infini, Entraînement), **8 décors**, la bande originale de Paper Mario, des records sauvegardés sur l'appareil.
+- **5 modes** (Marathon, Sprint 40 lignes, Ultra, Infini, Entraînement), **9 décors** (dont le château de Bowser), la bande originale de Paper Mario, des records sauvegardés sur l'appareil.
 - **Français et anglais**, au choix dans *Options → Langue*. Les secousses d'écran se règlent (Non / Légères / Fortes) dans *Options → Affichage et effets* ou dans le menu pause.
 - Clavier, souris, manette (A valide, B revient) et écran tactile.
 

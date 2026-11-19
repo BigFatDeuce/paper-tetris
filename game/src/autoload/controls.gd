@@ -70,7 +70,6 @@ func _extend_ui_actions() -> void:
 	# Godot 4 ships no gamepad button on accept / cancel: A confirms, B backs out
 	_add_pad("ui_accept", JOY_BUTTON_A)
 	_add_pad("ui_cancel", JOY_BUTTON_B)
-	_add_pad("ui_cancel", JOY_BUTTON_BACK)
 	for pair: Array in [["ui_up", JOY_AXIS_LEFT_Y, -1.0], ["ui_down", JOY_AXIS_LEFT_Y, 1.0],
 			["ui_left", JOY_AXIS_LEFT_X, -1.0], ["ui_right", JOY_AXIS_LEFT_X, 1.0]]:
 		var ev := InputEventJoypadMotion.new()
@@ -228,6 +227,12 @@ func describe(action: String) -> String:
 	return key_name(int(k[0])) if not k.is_empty() else "-"
 
 
+func toggle_fullscreen() -> void:
+	if OS.has_feature("android") or OS.has_feature("ios"):
+		return
+	Settings.set_value("fullscreen", not bool(Settings.get_value("fullscreen")))
+
+
 func set_touch(on: bool) -> void:
 	if on != using_touch:
 		using_touch = on
@@ -235,6 +240,13 @@ func set_touch(on: bool) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	# F11 or the gamepad's Select / Back button: fullscreen on and off, anywhere
+	if event.is_pressed() and not event.is_echo() and (
+			(event is InputEventKey and (event as InputEventKey).physical_keycode == KEY_F11)
+			or (event is InputEventJoypadButton and (event as InputEventJoypadButton).button_index == JOY_BUTTON_BACK)):
+		toggle_fullscreen()
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventScreenTouch and not using_touch:
 		set_touch(true)
 	elif (event is InputEventKey or event is InputEventJoypadButton) and using_touch:

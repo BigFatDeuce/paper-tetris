@@ -17,6 +17,8 @@ var mood := "calm"          # calm, nervous, sad, party
 var in_menu := false
 
 var _rare_t := 0.0
+var _level := 2             # crowd size index, rolled per scene in Random mode
+var _random := false
 var _rare_busy := false
 var _parade := false
 
@@ -34,6 +36,7 @@ func setup(id: String, ground_zones: Array, tops: Array = []) -> void:
 	zones = ground_zones
 	platforms = tops
 	in_menu = zones.size() == 1
+	_roll_level()
 	_rare_t = randf_range(8.0, 16.0) if in_menu else randf_range(18.0, 30.0)
 	_spawn_crowd(false)
 
@@ -48,7 +51,15 @@ func change_stage(id: String) -> void:
 	_spawn_crowd(true)
 
 
+## Crowd setting 4 is Random: a new size and a mixed cast on every load.
+func _roll_level() -> void:
+	var v := clampi(int(Settings.get_value("crowd")), 0, 4)
+	_random = v == 4
+	_level = randi_range(1, 3) if _random else v
+
+
 func _respawn(enter: bool) -> void:
+	_roll_level()
 	for a: Actor in actors:
 		if is_instance_valid(a):
 			a.pop_out()
@@ -61,6 +72,13 @@ func _respawn(enter: bool) -> void:
 func _crowd_keys(n: int) -> Array:
 	var info := StageLibrary.get_stage(stage_id)
 	var base: Array = info.get("crowd", ["shyguy_red"]).duplicate()
+	if _random:
+		# everyone's invited: the regulars of every stage
+		for sid: String in StageLibrary.ids():
+			for k: String in StageLibrary.get_stage(sid).get("crowd", []):
+				if not k in base:
+					base.append(k)
+		base.shuffle()
 	var specials: Array = info.get("specials", [])
 	var keys: Array = []
 	for i in n:
@@ -78,7 +96,7 @@ func _crowd_keys(n: int) -> Array:
 func _spawn_crowd(enter: bool) -> void:
 	if zones.is_empty():
 		return
-	var n: int = CROWD_SIZES[clampi(int(Settings.get_value("crowd")), 0, 3)]
+	var n: int = CROWD_SIZES[_level]
 	if n == 0:
 		return
 	var keys := _crowd_keys(n)
@@ -454,7 +472,7 @@ func _process(delta: float) -> void:
 	_rare_t -= delta
 	if _rare_t <= 0.0 and not _rare_busy:
 		_rare_t = randf_range(10.0, 22.0) if in_menu else randf_range(22.0, 45.0)
-		if int(Settings.get_value("crowd")) > 0:
+		if _level > 0:
 			_rare_event()
 
 

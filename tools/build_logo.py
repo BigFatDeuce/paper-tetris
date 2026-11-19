@@ -33,17 +33,28 @@ def paper_sheet() -> Image.Image:
     lum = rgb.mean(axis=2)
     h, w = alpha.shape
     yy, xx = np.mgrid[0:h, 0:w]
-    # letters of MARIO: coloured or dark ink, below the split; the TM mark
-    ink = ((sat > 40) | (lum < 120)) & (alpha > 200)
-    mask = (ink & (yy >= SPLIT)) | ((xx > 160) & (yy > 40) & (yy < 60) & (lum < 170) & (alpha > 0))
-    # but never the dark rim of the sheet itself: only pixels well inside it
+    # letters of MARIO: coloured or dark ink shapes that start below the
+    # split. Whole shapes, not rows: the bottom outline of PAPER reaches row
+    # 46-47 and must stay. Plus the TM mark.
     inside = cv2.erode((alpha > 200).astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
-    mask &= inside
-    mask = cv2.dilate(mask.astype(np.uint8), np.ones((3, 3), np.uint8)) > 0
-    mask &= inside & ((yy >= SPLIT) | (xx > 160))
+    ink = ((sat > 40) | (lum < 120)) & (alpha > 200) & inside
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(ink.astype(np.uint8), connectivity=8)
+    mario = np.zeros_like(ink)
+    for i in range(1, n):
+        if stats[i, cv2.CC_STAT_TOP] >= SPLIT + 2:
+            mario |= lab == i
+    # their soft anti-aliased edges too, but never above the split
+    mask = cv2.dilate(mario.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
+    mask &= inside & (yy >= SPLIT + 1)
+    mask |= (xx > 160) & (yy > 40) & (yy < 60) & (lum < 170) & (alpha > 0) & inside
+    # PAPER's outline right above the hole would bleed black into it: hide
+    # it from the fill (as if it were blank paper), then put it back
+    near = cv2.dilate(mask.astype(np.uint8), np.ones((9, 9), np.uint8)) > 0
+    dark = ((lum < 170) | (sat > 40)) & inside & near & ~mask
     bgr = cv2.cvtColor(a[:, :, :3], cv2.COLOR_RGB2BGR)
-    fixed = cv2.inpaint(bgr, mask.astype(np.uint8) * 255, 4, cv2.INPAINT_TELEA)
-    a[:, :, :3] = cv2.cvtColor(fixed, cv2.COLOR_BGR2RGB)
+    fixed = cv2.inpaint(bgr, (mask | dark).astype(np.uint8) * 255, 4, cv2.INPAINT_TELEA)
+    rgb_fixed = cv2.cvtColor(fixed, cv2.COLOR_BGR2RGB)
+    a[:, :, :3] = np.where(mask[:, :, None], rgb_fixed, a[:, :, :3])
     im = Image.fromarray(a, "RGBA")
     # upscale (premultiplied, so the transparent border does not go dark)
     pm = np.array(im).astype(np.float32) / 255.0
