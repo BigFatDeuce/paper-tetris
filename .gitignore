@@ -23,3 +23,6 @@ tools/pm_render/tex/
 # local assistant / editor settings
 .claude/
 .vscode/
+
+# local recording override (trailer capture at 1080p)
+game/override.cfg

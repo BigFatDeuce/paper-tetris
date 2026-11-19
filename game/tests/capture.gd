@@ -18,6 +18,12 @@ func _ready() -> void:
 	Settings.load_settings()
 	if args.has("lang"):
 		Settings.set_value("language", args["lang"], false)
+	# trailer recording: the music is laid over afterwards in one piece
+	if args.get("music", "1") == "0":
+		Settings.set_value("music_volume", 0.0, false)
+	for k in ["crowd", "screen_shake"]:
+		if args.has(k):
+			Settings.set_value(k, int(args[k]), false)
 	var helper := preload("res://tests/capture_helper.gd").new()
 	helper.args = args
 	helper.name = "CaptureHelper"

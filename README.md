@@ -23,8 +23,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/title.jpg" width="49%" alt="Title screen">
-  <img src="docs/screenshots/snow.jpg" width="49%" alt="A NICE double on the snowy stage">
+  <img src="docs/gameplay.gif" width="600" alt="Tetrises and a Perfect Clear on four Paper Mario stages">
 </p>
 
 ---
@@ -32,6 +31,11 @@
 ## What is it?
 
 **Paper Tetris** plays like the Tetris you know (no power-ups, no twists) and looks like a page of *Paper Mario* (N64, 2000). The board sits in the middle of real Paper Mario battle stages, rebuilt in 3D from the original models and textures. A troupe of Shy Guys hangs around the scenery: they dance when you score a Tetris, panic when the stack gets high, nap when you take your time, and fall flat when it's game over. They never touch the board. They're just here for the show.
+
+<p align="center">
+  <img src="docs/screenshots/title.jpg" width="49%" alt="Title screen">
+  <img src="docs/screenshots/snow.jpg" width="49%" alt="A NICE double on the snowy stage">
+</p>
 
 ## Features
 
@@ -103,6 +107,8 @@ The game is a [Godot 4.7](https://godotengine.org/) project (GDScript, *Compatib
    sh tools/export_all.sh            # or: web windows linux macos android
    ```
    The APK is signed with the key given in `GODOT_ANDROID_KEYSTORE_RELEASE_PATH` / `_USER` / `_PASSWORD`, and falls back to Godot's debug keystore.
+
+The GIF above and the 45-second trailer are recorded in-engine with Godot's Movie Maker: `sh tools/record_trailer.sh <footage dir>` films every shot (a small showcase bot plays), renders the captions with the game's own paper windows and cuts everything with ffmpeg ([`tools/make_trailer.py`](tools/make_trailer.py)).
 
 The ready-to-use game assets are in `game/assets/`. The Python scripts in [`tools/`](tools/) rebuild them (sprites, fonts, music loops, sound effects, the 3D-rendered stages and the icon) from the original ripped sheets, soundtrack and models. Those raw rips aren't part of this repository.
 
