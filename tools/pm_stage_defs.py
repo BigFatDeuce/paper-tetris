@@ -151,6 +151,37 @@ def sphere(texture, x, z, r, layer="back", **kw):
 FL, FR, FZ = -0.155, 0.105, 0.335
 
 
+def jungle_overhang(leaves, frond):
+    """Leaf clusters and fronds hanging from above the screen (cards turned
+    upside down: they grow downward from `y`), hiding the flat tops of the
+    battle stage canopies. The layout below is drawn for z -0.05 (screen top
+    at y 0.249, x -0.334..0.284); it is scaled toward the camera to z 0.15,
+    in front of the canopies but still behind the Shy Guys."""
+    z = 0.15
+    cx, cy, k = PP_CAM["pos"][0], PP_CAM["pos"][1], (0.6 - z) / 0.65
+
+    def card(texture, x, z, h, y, **kw):  # noqa: the scaled version
+        # the clusters reach 0.012 above the screen so no sky shows through
+        return globals()["card"](texture, cx + (x - cx) * k, z, (h + 0.012) * k,
+                                 y=cy + (y + 0.012 - cy) * k, **kw)
+
+    out = []
+    # (x, top y, height, flip, tilt) of each leaf cluster, left to right
+    for x, y, h, fl, tilt in [
+        (-0.33, 0.268, 0.075, False, 6), (-0.255, 0.262, 0.06, True, -4),
+        (-0.18, 0.27, 0.07, False, 3), (-0.105, 0.262, 0.055, True, -6),
+        (-0.035, 0.266, 0.06, False, 4), (0.035, 0.262, 0.055, True, -3),
+        (0.105, 0.27, 0.07, False, 5), (0.18, 0.262, 0.06, True, -5),
+        (0.25, 0.268, 0.075, False, 3), (0.31, 0.262, 0.06, True, -6),
+    ]:
+        out.append(card(leaves, x, z, h, y=y, flip=fl, rot_z=180 + tilt))
+    # a few fronds dangling lower between the clusters
+    for x, h, fl, tilt in [(-0.3, 0.075, False, 8), (-0.215, 0.06, True, -6),
+                           (0.145, 0.06, False, 6), (0.27, 0.08, True, -8)]:
+        out.append(card(frond, x, z + 0.01, h, y=0.262, flip=fl, rot_z=180 + tilt))
+    return out
+
+
 def stage_defs() -> dict:
     bush = tex("Bush.png")
     big_bush = tex("big bush.png")
@@ -256,7 +287,7 @@ def stage_defs() -> dict:
             card(leaves, -0.27, 0.06, 0.04), card(leaves, 0.21, 0.07, 0.04, flip=True),
             card(leaf, FL, FZ, 0.022, "front", rot_z=20),
             card(leaf, FR, FZ, 0.022, "front", flip=True, rot_z=-20),
-        ],
+        ] + jungle_overhang(leaves, frond),
     }
 
     # Mt. Lavalava: charred rock, a lava river, basalt pillars, burnt trees
