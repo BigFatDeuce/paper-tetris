@@ -50,7 +50,17 @@ func _load_json(path: String) -> Dictionary:
 	return parsed if typeof(parsed) == TYPE_DICTIONARY else {}
 
 
+## The buses (and the pause low-pass) live in res://default_bus_layout.tres:
+## on the web, buses added at runtime cut every sound off the speakers (the
+## sample player disconnects their outputs and never reconnects them).
 func _setup_buses() -> void:
+	_music_bus = AudioServer.get_bus_index("Music")
+	_sfx_bus = AudioServer.get_bus_index("SFX")
+	if _music_bus >= 0 and _sfx_bus >= 0 and AudioServer.get_bus_effect_count(_music_bus) > 0:
+		_lowpass = AudioServer.get_bus_effect(_music_bus, 0) as AudioEffectLowPassFilter
+		AudioServer.set_bus_effect_enabled(_music_bus, 0, false)
+		return
+	push_warning("default_bus_layout.tres missing: building the buses at runtime")
 	if AudioServer.get_bus_index("Music") < 0:
 		AudioServer.add_bus()
 		AudioServer.set_bus_name(AudioServer.bus_count - 1, "Music")
