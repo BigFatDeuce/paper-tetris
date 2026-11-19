@@ -1,0 +1,17 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://d4dvfwxa706au"
+path="res://.godot/imported/paper_ink_x4.fnt-9163c816922ca4b2a6adbfd5ad8117a7.fontdata"
+
+[deps]
+
+source_file="res://assets/fonts/paper_ink_x4.fnt"
+dest_files=["res://.godot/imported/paper_ink_x4.fnt-9163c816922ca4b2a6adbfd5ad8117a7.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true
+scaling_mode=2

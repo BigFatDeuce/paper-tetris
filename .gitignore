@@ -1,0 +1,25 @@
+# Godot caches and local editor data
+.godot/
+*.tmp
+export_credentials.cfg
+
+# builds (published as GitHub releases and on the website)
+dist/
+
+# local tooling: Godot binaries, Python caches
+tools/bin/
+__pycache__/
+*.pyc
+
+# original rips used by the asset pipelines (not redistributed here)
+source_assets/
+tools/source_path.txt
+tools/pm_render/.godot/
+tools/pm_render/out/
+tools/pm_render/src/
+tools/pm_render/models/
+tools/pm_render/tex/
+
+# local assistant / editor settings
+.claude/
+.vscode/

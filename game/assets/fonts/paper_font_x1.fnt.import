@@ -1,0 +1,17 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://e30q13a1bwwc"
+path="res://.godot/imported/paper_font_x1.fnt-1f2efc2c5f27390f1a8b3677f3e764c5.fontdata"
+
+[deps]
+
+source_file="res://assets/fonts/paper_font_x1.fnt"
+dest_files=["res://.godot/imported/paper_font_x1.fnt-1f2efc2c5f27390f1a8b3677f3e764c5.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true
+scaling_mode=2

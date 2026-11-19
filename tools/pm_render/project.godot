@@ -1,0 +1,20 @@
+config_version=5
+
+[application]
+config/name="pm_render"
+run/main_scene="res://render.tscn"
+
+[display]
+window/size/viewport_width=640
+window/size/viewport_height=360
+
+[importer_defaults]
+texture={
+"compress/mode": 0,
+"detect_3d/compress_to": 0,
+"mipmaps/generate": true
+}
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

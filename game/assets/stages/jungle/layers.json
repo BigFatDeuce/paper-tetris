@@ -1,0 +1,32 @@
+{
+ "layers": [
+  {
+   "file": "sky.png",
+   "x": 0,
+   "y": 0,
+   "base": 1080,
+   "sway": 0.0,
+   "depth": 0.0,
+   "front": false
+  },
+  {
+   "file": "back.png",
+   "x": 0,
+   "y": 20,
+   "base": 1080,
+   "sway": 0.0,
+   "depth": 0.5,
+   "front": false
+  },
+  {
+   "file": "front.png",
+   "x": 0,
+   "y": 968,
+   "base": 1077,
+   "sway": 0.0,
+   "depth": 0.5,
+   "front": true
+  }
+ ],
+ "ground": 935
+}

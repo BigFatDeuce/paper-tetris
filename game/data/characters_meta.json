@@ -1,0 +1,346 @@
+{
+ "shyguy_red": {
+  "cell": [
+   61,
+   47
+  ],
+  "foot": [
+   29,
+   45
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "run",
+   "crouch",
+   "jump",
+   "fall",
+   "land",
+   "cheer",
+   "front",
+   "look_up",
+   "squat",
+   "tumble",
+   "dizzy",
+   "flail",
+   "knocked",
+   "lie",
+   "sleep",
+   "back",
+   "spin",
+   "burnt",
+   "smoke",
+   "sling"
+  ]
+ },
+ "shyguy_blue": {
+  "cell": [
+   61,
+   47
+  ],
+  "foot": [
+   29,
+   45
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "run",
+   "crouch",
+   "jump",
+   "fall",
+   "land",
+   "cheer",
+   "front",
+   "look_up",
+   "squat",
+   "tumble",
+   "dizzy",
+   "flail",
+   "knocked",
+   "lie",
+   "sleep",
+   "back",
+   "spin",
+   "burnt",
+   "smoke",
+   "sling"
+  ]
+ },
+ "shyguy_green": {
+  "cell": [
+   61,
+   47
+  ],
+  "foot": [
+   29,
+   45
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "run",
+   "crouch",
+   "jump",
+   "fall",
+   "land",
+   "cheer",
+   "front",
+   "look_up",
+   "squat",
+   "tumble",
+   "dizzy",
+   "flail",
+   "knocked",
+   "lie",
+   "sleep",
+   "back",
+   "spin",
+   "burnt",
+   "smoke",
+   "sling"
+  ]
+ },
+ "shyguy_pink": {
+  "cell": [
+   61,
+   47
+  ],
+  "foot": [
+   29,
+   45
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "run",
+   "crouch",
+   "jump",
+   "fall",
+   "land",
+   "cheer",
+   "front",
+   "look_up",
+   "squat",
+   "tumble",
+   "dizzy",
+   "flail",
+   "knocked",
+   "lie",
+   "sleep",
+   "back",
+   "spin",
+   "burnt",
+   "smoke",
+   "sling"
+  ]
+ },
+ "shyguy_yellow": {
+  "cell": [
+   61,
+   47
+  ],
+  "foot": [
+   29,
+   45
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "run",
+   "crouch",
+   "jump",
+   "fall",
+   "land",
+   "cheer",
+   "front",
+   "look_up",
+   "squat",
+   "tumble",
+   "dizzy",
+   "flail",
+   "knocked",
+   "lie",
+   "sleep",
+   "back",
+   "spin",
+   "burnt",
+   "smoke",
+   "sling"
+  ]
+ },
+ "anti_guy": {
+  "cell": [
+   61,
+   47
+  ],
+  "foot": [
+   29,
+   45
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "run",
+   "crouch",
+   "jump",
+   "fall",
+   "land",
+   "cheer",
+   "front",
+   "look_up",
+   "squat",
+   "tumble",
+   "dizzy",
+   "flail",
+   "knocked",
+   "lie",
+   "sleep",
+   "back",
+   "spin",
+   "burnt",
+   "smoke",
+   "sling"
+  ]
+ },
+ "groove_guy": {
+  "cell": [
+   51,
+   51
+  ],
+  "foot": [
+   23,
+   49
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "dance",
+   "dance2",
+   "lie",
+   "flail",
+   "burnt",
+   "land"
+  ]
+ },
+ "pyro_guy": {
+  "cell": [
+   48,
+   57
+  ],
+  "foot": [
+   21,
+   55
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "jump",
+   "lie",
+   "flare",
+   "faded"
+  ]
+ },
+ "sky_guy": {
+  "cell": [
+   48,
+   42
+  ],
+  "foot": [
+   27,
+   40
+  ],
+  "anims": [
+   "float",
+   "aim",
+   "hold",
+   "fall",
+   "burnt"
+  ]
+ },
+ "spear_guy": {
+  "cell": [
+   44,
+   38
+  ],
+  "foot": [
+   21,
+   36
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "hop",
+   "dance",
+   "burnt"
+  ]
+ },
+ "spy_guy": {
+  "cell": [
+   52,
+   51
+  ],
+  "foot": [
+   26,
+   49
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "sling",
+   "sit",
+   "hammer"
+  ]
+ },
+ "traffic_guy": {
+  "cell": [
+   67,
+   46
+  ],
+  "foot": [
+   33,
+   44
+  ],
+  "anims": [
+   "idle",
+   "signal",
+   "signal2",
+   "wave",
+   "lie",
+   "back",
+   "jump"
+  ]
+ },
+ "stilt_guy": {
+  "cell": [
+   39,
+   38
+  ],
+  "foot": [
+   20,
+   36
+  ],
+  "anims": [
+   "idle",
+   "wobble",
+   "flail"
+  ]
+ },
+ "general_guy": {
+  "cell": [
+   55,
+   53
+  ],
+  "foot": [
+   33,
+   51
+  ],
+  "anims": [
+   "idle",
+   "walk",
+   "salute",
+   "cheer",
+   "lie"
+  ]
+ }
+}

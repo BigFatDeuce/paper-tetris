@@ -1,0 +1,205 @@
+{
+ "move": {
+  "file": "res://assets/sfx/move.wav",
+  "volume_db": -6.0,
+  "pitch_var": 0.02
+ },
+ "rotate": {
+  "file": "res://assets/sfx/rotate.wav",
+  "volume_db": -5.0,
+  "pitch_var": 0.02
+ },
+ "rotate_fail": {
+  "file": "res://assets/sfx/rotate_fail.wav",
+  "volume_db": -8.0
+ },
+ "soft_drop": {
+  "file": "res://assets/sfx/soft_drop.wav",
+  "volume_db": -14.0
+ },
+ "lock": {
+  "file": "res://assets/sfx/lock.wav",
+  "volume_db": -5.0,
+  "pitch_var": 0.03
+ },
+ "hard_drop": {
+  "file": "res://assets/sfx/hard_drop.wav",
+  "volume_db": -2.0,
+  "pitch_var": 0.03
+ },
+ "hold": {
+  "file": "res://assets/sfx/hold.wav",
+  "volume_db": -4.0
+ },
+ "clear1": {
+  "file": "res://assets/sfx/clear1.wav",
+  "volume_db": -3.0
+ },
+ "clear2": {
+  "file": "res://assets/sfx/clear2.wav",
+  "volume_db": -3.0
+ },
+ "clear3": {
+  "file": "res://assets/sfx/clear3.wav",
+  "volume_db": -2.0
+ },
+ "clear4": {
+  "file": "res://assets/sfx/clear4.wav",
+  "volume_db": -1.0
+ },
+ "tspin": {
+  "file": "res://assets/sfx/tspin.wav",
+  "volume_db": -2.0
+ },
+ "b2b": {
+  "file": "res://assets/sfx/b2b.wav",
+  "volume_db": -4.0
+ },
+ "combo": {
+  "file": "res://assets/sfx/combo.wav",
+  "volume_db": -5.0,
+  "stack": true
+ },
+ "perfect": {
+  "file": "res://assets/sfx/perfect.wav",
+  "volume_db": 0.0
+ },
+ "level_up": {
+  "file": "res://assets/sfx/level_up.wav",
+  "volume_db": -2.0
+ },
+ "count": {
+  "file": "res://assets/sfx/count.wav",
+  "volume_db": -3.0
+ },
+ "go": {
+  "file": "res://assets/sfx/go.wav",
+  "volume_db": -2.0
+ },
+ "victory": {
+  "file": "res://assets/sfx/victory.wav",
+  "volume_db": 0.0
+ },
+ "game_over": {
+  "file": "res://assets/sfx/game_over.wav",
+  "volume_db": 0.0
+ },
+ "new_record": {
+  "file": "res://assets/sfx/new_record.wav",
+  "volume_db": -2.0
+ },
+ "tally": {
+  "file": "res://assets/sfx/tally.wav",
+  "volume_db": -10.0,
+  "stack": true
+ },
+ "menu_move": {
+  "file": "res://assets/sfx/menu_move.wav",
+  "volume_db": -4.0
+ },
+ "menu_select": {
+  "file": "res://assets/sfx/menu_select.wav",
+  "volume_db": -3.0
+ },
+ "menu_back": {
+  "file": "res://assets/sfx/menu_back.wav",
+  "volume_db": -4.0
+ },
+ "menu_deny": {
+  "file": "res://assets/sfx/menu_deny.wav",
+  "volume_db": -5.0
+ },
+ "menu_tick": {
+  "file": "res://assets/sfx/menu_tick.wav",
+  "volume_db": -6.0,
+  "stack": true
+ },
+ "window_open": {
+  "file": "res://assets/sfx/window_open.wav",
+  "volume_db": -6.0
+ },
+ "window_close": {
+  "file": "res://assets/sfx/window_close.wav",
+  "volume_db": -7.0
+ },
+ "pause": {
+  "file": "res://assets/sfx/pause.wav",
+  "volume_db": -4.0
+ },
+ "page_turn": {
+  "file": "res://assets/sfx/page_turn.wav",
+  "volume_db": -6.0
+ },
+ "transition_close": {
+  "file": "res://assets/sfx/transition_close.wav",
+  "volume_db": -10.0
+ },
+ "transition_open": {
+  "file": "res://assets/sfx/transition_open.wav",
+  "volume_db": -10.0
+ },
+ "stage_pop": {
+  "file": "res://assets/sfx/stage_pop.wav",
+  "volume_db": -6.0
+ },
+ "pop": {
+  "file": "res://assets/sfx/pop.wav",
+  "volume_db": -9.0,
+  "pitch_var": 0.1,
+  "stack": true
+ },
+ "danger": {
+  "file": "res://assets/sfx/danger.wav",
+  "volume_db": -8.0
+ },
+ "pm_happy_chime": {
+  "file": "res://assets/sfx/pm/17_0000.wav",
+  "volume_db": -6.0
+ },
+ "pm_boing": {
+  "file": "res://assets/sfx/pm/18_0000.wav",
+  "volume_db": -12.0,
+  "pitch_var": 0.08,
+  "stack": true
+ },
+ "pm_jump": {
+  "file": "res://assets/sfx/pm/1c_0001.wav",
+  "volume_db": -14.0,
+  "pitch_var": 0.08,
+  "stack": true
+ },
+ "pm_twinkle": {
+  "file": "res://assets/sfx/pm/1b_0009.wav",
+  "volume_db": -8.0
+ },
+ "pm_ching": {
+  "file": "res://assets/sfx/pm/1a_000d.wav",
+  "volume_db": -8.0
+ },
+ "pm_fanfare": {
+  "file": "res://assets/sfx/pm/47_0001.wav",
+  "volume_db": -4.0
+ },
+ "pm_cheer": {
+  "file": "res://assets/sfx/pm/35_0008.wav",
+  "volume_db": -10.0
+ },
+ "pm_lucky": {
+  "file": "res://assets/sfx/pm/38_0001.wav",
+  "volume_db": -6.0
+ },
+ "pm_scream": {
+  "file": "res://assets/sfx/pm/42_000d.wav",
+  "volume_db": -14.0,
+  "pitch_var": 0.1,
+  "stack": true
+ },
+ "pm_balloon_pop": {
+  "file": "res://assets/sfx/pm/39_0003.wav",
+  "volume_db": -10.0
+ },
+ "pm_paper": {
+  "file": "res://assets/sfx/pm/29_000f.wav",
+  "volume_db": -10.0
+ }
+}
