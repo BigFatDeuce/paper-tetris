@@ -7,6 +7,11 @@ signal device_changed(is_pad: bool)
 signal bindings_changed()
 signal touch_changed()
 
+## Gamepad bindings answer every pad: a new InputEvent belongs to device 0,
+## and a browser often gives the gamepad another index (reconnects, virtual
+## pads...), which left A dead in the web menus.
+const ANY_PAD := -1
+
 const GAME_ACTIONS := [
 	"game_left", "game_right", "game_soft_drop", "game_hard_drop",
 	"game_rotate_cw", "game_rotate_ccw", "game_hold", "game_pause",
@@ -73,6 +78,7 @@ func _extend_ui_actions() -> void:
 	for pair: Array in [["ui_up", JOY_AXIS_LEFT_Y, -1.0], ["ui_down", JOY_AXIS_LEFT_Y, 1.0],
 			["ui_left", JOY_AXIS_LEFT_X, -1.0], ["ui_right", JOY_AXIS_LEFT_X, 1.0]]:
 		var ev := InputEventJoypadMotion.new()
+		ev.device = ANY_PAD
 		ev.axis = pair[1]
 		ev.axis_value = pair[2]
 		if not _has_event(pair[0], ev):
@@ -88,6 +94,7 @@ func _add_key(action: String, key: Key) -> void:
 
 func _add_pad(action: String, btn: JoyButton) -> void:
 	var ev := InputEventJoypadButton.new()
+	ev.device = ANY_PAD
 	ev.button_index = btn
 	if not _has_event(action, ev):
 		InputMap.action_add_event(action, ev)
@@ -126,10 +133,12 @@ func apply_bindings() -> void:
 			InputMap.action_add_event(action, ev)
 		for btn in pads_for(action):
 			var jb := InputEventJoypadButton.new()
+			jb.device = ANY_PAD
 			jb.button_index = int(btn)
 			InputMap.action_add_event(action, jb)
 		if STICK.has(action):
 			var jm := InputEventJoypadMotion.new()
+			jm.device = ANY_PAD
 			jm.axis = STICK[action][0]
 			jm.axis_value = STICK[action][1]
 			InputMap.action_add_event(action, jm)

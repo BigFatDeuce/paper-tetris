@@ -73,6 +73,10 @@ func _process(delta: float) -> void:
 				Input.parse_input_event(u))
 			print("CAPTURE tap ", pos, " at ", snappedf(_t, 0.01))
 			continue
+		if str(it[1]).begins_with("joy@") or str(it[1]).begins_with("axis@"):
+			# joy@BUTTON: a real gamepad button press; axis@AXIS;VALUE: a stick
+			_pad_input(str(it[1]))
+			continue
 		var ev := InputEventAction.new()
 		ev.action = it[1]
 		ev.pressed = true
@@ -353,3 +357,32 @@ func _evaluate(grid: PackedByteArray, type: int, r: int, p: Vector2i) -> float:
 			sc -= 8.0
 	sc -= maxf(0, maxh - 10) * 3.0
 	return sc + randf() * 0.05
+
+
+## joy@BUTTON[#DEVICE] / axis@AXIS;VALUE[#DEVICE]
+func _pad_input(spec: String) -> void:
+	var dev := 0
+	if "#" in spec:
+		dev = int(spec.get_slice("#", 1))
+		spec = spec.get_slice("#", 0)
+	if spec.begins_with("joy@"):
+		var b := InputEventJoypadButton.new()
+		b.device = dev
+		b.button_index = int(spec.substr(4)) as JoyButton
+		b.pressed = true
+		b.pressure = 1.0
+		Input.parse_input_event(b)
+		get_tree().create_timer(0.08, true, false, true).timeout.connect(func():
+			var u := InputEventJoypadButton.new()
+			u.device = dev
+			u.button_index = b.button_index
+			u.pressed = false
+			Input.parse_input_event(u))
+	else:
+		var p := spec.substr(5).split(";")
+		var m := InputEventJoypadMotion.new()
+		m.device = dev
+		m.axis = int(p[0]) as JoyAxis
+		m.axis_value = float(p[1])
+		Input.parse_input_event(m)
+	print("CAPTURE pad ", spec, " at ", snappedf(_t, 0.01))
