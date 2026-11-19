@@ -116,6 +116,34 @@ def _clean_mask(ink: np.ndarray, r: int = 2) -> np.ndarray:
     return grown & (inside | ink)
 
 
+def _straighten_left(patch: np.ndarray, m: np.ndarray, ink: np.ndarray):
+    """PAPER's P leans into the E: its bowl takes a notch out of the E's left
+    side. Rebuild that side as a straight edge: paper filled in up to the
+    leftmost column the E reaches, and the outline redrawn along it."""
+    body = m & ~ink
+    rows = np.nonzero(body.any(axis=1))[0]
+    lefts = {y: int(np.nonzero(body[y])[0][0]) for y in rows}
+    edge = int(np.percentile(list(lefts.values()), 10))
+    paper = np.median(patch[body], axis=0)
+    outline = np.median(patch[ink & m], axis=0)
+    top, bot = rows[0], rows[-1]
+    for y in range(top, bot + 1):
+        bx = lefts.get(y, edge)
+        if bx > edge:
+            # the P's old outline fades out a little past the ink threshold
+            patch[y, edge:bx + 2] = paper
+            m[y, edge:bx + 2] = True
+        patch[y, edge - 2:edge] = outline
+        m[y, edge - 2:edge] = True
+    # close the top-left corner onto the top bar's outline
+    corner = lefts.get(top, edge) + 3
+    patch[top - 2:top, edge - 2:corner] = outline
+    m[top - 2:top, edge - 2:corner] = True
+    patch[bot + 1:bot + 3, edge - 2:edge + 3] = outline
+    m[bot + 1:bot + 3, edge - 2:edge + 3] = True
+    return patch, m
+
+
 def draw_word(a: np.ndarray, src: np.ndarray, ss: int = 8):
     rgb_src = src[:, :, :3].astype(np.float32)
     lum_src = rgb_src.mean(axis=2)
@@ -133,6 +161,8 @@ def draw_word(a: np.ndarray, src: np.ndarray, ss: int = 8):
             patch = rgb_src[y0:y1, x0:x1]
             ink = lum_src[y0:y1, x0:x1] < 110
             m = _clean_mask(ink)
+            if ch == "E":
+                patch, m = _straighten_left(patch.copy(), m, ink)
             mf = cv2.GaussianBlur(m.astype(np.float32), (3, 3), 0.6)[:, :, None]
             dy = WORD_Y - 2 + (y0 - 7)
             reg = out[dy:dy + (y1 - y0), x:x + (x1 - x0)]

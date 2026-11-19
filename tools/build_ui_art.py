@@ -60,6 +60,73 @@ def down(img, size):
 
 # ------------------------------------------------------------------ blocks
 
+# every piece wears an original Paper Mario icon (Battle Extras & HUD sheet,
+# 24x24 cells): items for the bright pieces, partners for the others
+ICON_SHEET = "Nintendo 64 - Paper Mario - Miscellaneous - Battle Extras & HUD.png"
+ICONS = {
+    "I": (249, 313),   # Star
+    "O": (19, 436),    # Mushroom
+    "T": (221, 313),   # Fire Flower
+    "S": (542, 313),   # Kooper
+    "Z": (77, 436),    # 1-Up Mushroom
+    "J": (567, 313),   # Bombette
+    "L": (514, 314),   # Goombario
+}
+PAPER_RIM = (246, 236, 212)
+INK = (38, 30, 28)
+
+
+def _icon(kind):
+    from paths import SRC
+    if kind not in ICONS:
+        return None
+    x, y = ICONS[kind]
+    ic = Image.open(SRC / ICON_SHEET).convert("RGBA").crop((x, y, x + 24, y + 24))
+    return ic.crop(ic.getbbox())
+
+
+def pm_block(kind, size=CELL):
+    """A paper tile: cream paper rim, ink outline, flat colour, the icon on top
+    with a soft shadow (like a sticker stuck on a card)."""
+    S = size * SS
+    base = hexrgb(PIECES[kind])
+    img = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    rim = max(1.4, size * 0.05) * SS
+    ol = max(1.3, size * 0.05) * SS
+    d.rounded_rectangle([0, 0, S - 1, S - 1], int(size * 0.16 * SS), fill=PAPER_RIM + (255,))
+    d.rounded_rectangle([rim, rim, S - 1 - rim, S - 1 - rim], int(size * 0.12 * SS), fill=INK + (255,))
+    i0 = rim + ol
+    top, bot = shade(base, 0.06), shade(base, -0.07)
+    grad = Image.new("RGBA", (S, S))
+    gd = ImageDraw.Draw(grad)
+    for yy in range(S):
+        t = yy / S
+        gd.line([(0, yy), (S, yy)], fill=tuple(int(top[i] * (1 - t) + bot[i] * t) for i in range(3)) + (255,))
+    mask = Image.new("L", (S, S), 0)
+    ImageDraw.Draw(mask).rounded_rectangle([i0, i0, S - 1 - i0, S - 1 - i0], int(size * 0.08 * SS), fill=255)
+    img.paste(grad, (0, 0), mask)
+    # soft inner light on top-left, shade bottom-right
+    hl = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    ImageDraw.Draw(hl).rounded_rectangle([i0, i0, S - 1 - i0, S - 1 - i0], int(size * 0.08 * SS),
+                                         outline=shade(base, 0.25) + (150,), width=int(size * 0.045 * SS))
+    hl_mask = Image.new("L", (S, S), 0)
+    ImageDraw.Draw(hl_mask).polygon([(0, 0), (S, 0), (0, S)], fill=255)
+    img.paste(hl, (0, 0), ImageChops.multiply(hl_mask, hl.split()[3]))
+    ic = _icon(kind)
+    if ic is not None:
+        span = S - 2 * i0
+        k = span * 0.84 / max(ic.size)
+        icon = ic.resize((max(1, round(ic.width * k)), max(1, round(ic.height * k))), Image.NEAREST)
+        ox, oy = (S - icon.width) // 2, (S - icon.height) // 2
+        sh = Image.new("RGBA", icon.size, (0, 0, 0, 0))
+        sh.putalpha(icon.split()[3].point(lambda v: v * 0.35))
+        sh = sh.filter(ImageFilter.GaussianBlur(SS * size / 44))
+        img.alpha_composite(sh, (ox + int(SS * size / 30), oy + int(SS * size / 22)))
+        img.alpha_composite(icon, (ox, oy))
+    out = img.resize((size, size), Image.LANCZOS)
+    return apply_grain(out, 3, seed=hash(kind) % 1000)
+
 def block(color_hex, size=CELL):
     S = size * SS
     base = hexrgb(color_hex)
@@ -263,8 +330,8 @@ def misc():
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     for k, c in PIECES.items():
-        block(c).save(OUT / f"block_{k}.png")
-        block(c, 26).save(OUT / f"block_{k}_small.png")
+        pm_block(k).save(OUT / f"block_{k}.png")
+        pm_block(k, 26).save(OUT / f"block_{k}_small.png")
     ghost().save(OUT / "block_ghost.png")
     cell_flash().save(OUT / "block_flash.png")
     panel()
