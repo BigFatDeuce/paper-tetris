@@ -34,24 +34,25 @@
 
 <p align="center">
   <img src="docs/screenshots/title.jpg" width="49%" alt="Title screen">
-  <img src="docs/screenshots/snow.jpg" width="49%" alt="A NICE double on the snowy stage">
+  <img src="docs/screenshots/bowser.jpg" width="49%" alt="Bowser watching the board in his castle">
 </p>
 
 ## Features
 
 - **Strict modern Tetris:** SRS rotation with wall kicks, 7-bag randomizer, hold, ghost piece, up to 5 next pieces, lock delay with move reset, T-Spins (and minis), Back-to-Back, combos, Perfect Clears, adjustable DAS / ARR / soft drop speed.
 - **5 modes:** Marathon (150 lines, 15 levels), Sprint 40 Lines, Ultra (3 minutes), Endless and Practice. Top-10 records are kept on your device.
-- **9 Paper Mario stages:** Shy Guy's Toy Box, Pleasant Path, Flower Fields, Dry Dry Desert, Jade Jungle, Mt. Lavalava, Shiver Mountain, Shooting Star Summit and Bowser's Castle, where Bowser himself watches you play (and hates your Tetrises). In *Journey* mode you travel to a new stage every 2 levels.
+- **9 Paper Mario stages:** Shy Guy's Toy Box, Pleasant Path, Flower Fields, Dry Dry Desert, Jade Jungle, Mt. Lavalava, Shiver Mountain, Shooting Star Summit and Bowser's Castle, where Bowser himself watches you play (and hates your Tetrises). In Marathon and Endless you travel from stage to stage as you level up, and Bowser's Castle is the last stop, from level 15 on.
+- **Pieces with Mario's partners:** each piece is a paper tile with Sushie, Parakarry, Watt, Kooper, Lakilester, Bombette or Goombario, straight from the original sprites.
 - **The Shy Guy troupe:** red, blue, green, pink, yellow and Anti Guys, with rare guest appearances from Groove Guy, Sky Guy, Spy Guy, Stilt Guy, Pyro Guy, Spear Guy, Traffic Guy and General Guy's parade.
 - **Paper Mario juice:** NICE / GOOD / SUPER! words, the 100% burst on a Perfect Clear, coins flying into your score, dust clouds, spinning stars, hearts from the crowd and paper confetti everywhere.
-- **The original soundtrack**: every stage alternates two themes from the same corner of the Mushroom Kingdom, with soft crossfades; a jukebox picks your game music, and a sound test remixes every effect from the original samples.
+- **The original soundtrack**: every stage alternates two themes from the same corner of the Mushroom Kingdom, with soft crossfades (Bowser's Castle opens with *Bowser, My Old Enemy!*); a jukebox picks your game music, and a sound test remixes every effect from the original samples.
 - **Old-school list menus** that work with keyboard, mouse, gamepad and touch.
 - **English and French**, switchable at any time in *Options*.
 - **Comfort options:** screen shake Off / Light / Full, confetti on/off, crowd size from *None* to *Party*, or *Random* for a new troupe on every screen.
 
 <p align="center">
-  <img src="docs/screenshots/flowers.jpg" width="49%" alt="Coins flying to the score on Flower Fields">
-  <img src="docs/screenshots/volcano.jpg" width="49%" alt="Mt. Lavalava">
+  <img src="docs/screenshots/flowers.jpg" width="49%" alt="A triple on Flower Fields">
+  <img src="docs/screenshots/snow.jpg" width="49%" alt="A line clear on Shiver Mountain">
   <img src="docs/screenshots/menu_fr.jpg" width="49%" alt="Options menu in French">
   <img src="docs/screenshots/results.jpg" width="49%" alt="Results screen with a new record">
 </p>
@@ -153,8 +154,9 @@ If you are a rights holder and want something removed, please [open an issue](ht
 
 - **Jouer dans le navigateur :** <https://paper-tetris.holy-c.men/> (PC, téléphone et tablette en paysage, avec commandes tactiles).
 - **Télécharger** (Windows, Linux, macOS, Android) : [dernière version](https://github.com/BigFatDeuce/paper-tetris/releases/latest).
-- **5 modes** (Marathon, Sprint 40 lignes, Ultra, Infini, Entraînement), **9 décors** (dont le château de Bowser), la bande originale de Paper Mario (deux thèmes par décor, enchaînés en fondu), des records sauvegardés sur l'appareil.
-- **Français et anglais**, au choix dans *Options → Langue*. Les secousses d'écran se règlent (Non / Légères / Fortes) dans *Options → Affichage et effets* ou dans le menu pause.
+- **5 modes** (Marathon, Sprint 40 lignes, Ultra, Infini, Entraînement), **9 décors**, du coffre à jouets des Maskass jusqu'au château de Bowser, dernière étape du Marathon à partir du niveau 15, la bande originale de Paper Mario (deux thèmes par décor, enchaînés en fondu), des records sauvegardés sur l'appareil.
+- **Les pièces portent les équipiers de Mario** (Sushie, Kooper volant, Watt, Kooper, Lakilester, Bombette, Goombario), tirés des sprites d'origine.
+- **Français et anglais**, au choix dans *Options → Langue*. Plein écran avec **F11** ou **Select** sur la manette. Les secousses d'écran se règlent (Non / Légères / Fortes) dans *Options → Affichage et effets* ou dans le menu pause.
 - Clavier, souris, manette (A valide, B revient) et écran tactile.
 
 Paper Mario, les Maskass ainsi que tous les personnages, graphismes, musiques et sons associés appartiennent à **Nintendo** et **Intelligent Systems**. Tetris est une marque de **The Tetris Company**. Ce projet n'est ni affilié ni approuvé par eux. Il est gratuit et ne doit pas être vendu. Pour toute demande de retrait, [ouvrez une issue](https://github.com/BigFatDeuce/paper-tetris/issues).

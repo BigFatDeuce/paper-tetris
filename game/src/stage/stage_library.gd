@@ -86,9 +86,17 @@ static func stage_name(id: String) -> String:
 	return get_stage(id)["name"]
 
 
-## Marathon / Endless journey: two levels per stage, then loop.
+## Marathon / Endless journey: the first stages share levels 1-14, and
+## Bowser's Castle is the last stop, from level 15 (Marathon's final level)
+## onwards.
+const FINAL_LEVEL := 15
+
+
 static func for_level(level: int) -> String:
-	var idx := clampi((level - 1) / 2, 0, 9999) % ORDER.size()
+	if level >= FINAL_LEVEL:
+		return ORDER[-1]
+	var road := ORDER.size() - 1
+	var idx := clampi(int(float(level - 1) * road / float(FINAL_LEVEL - 1)), 0, road - 1)
 	return ORDER[idx]
 
 
