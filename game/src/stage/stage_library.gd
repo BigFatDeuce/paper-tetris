@@ -63,7 +63,7 @@ const STAGES := {
 		"rare": ["anti_guy", "stilt_guy", "spy_guy"],
 	},
 	"bowser": {
-		"name": "Bowser's Castle", "music": "stage_bowser", "music2": "extra_bowser",
+		"name": "Bowser's Castle", "music": "extra_bowser", "music2": "stage_bowser",
 		"ambient": "embers", "tint": Color(1, 0.94, 0.92),
 		"crowd": ["shyguy_red", "pyro_guy", "shyguy_blue", "shyguy_green"],
 		"specials": ["spy_guy", "spear_guy", "groove_guy"],
