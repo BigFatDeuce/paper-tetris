@@ -67,6 +67,13 @@ func _ready() -> void:
 	prompt.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_press = prompt
 	ui.add_child(_press)
+	# the labels switch language live: the prompt image must follow
+	Settings.changed.connect(func(k: String):
+		if k == "language" and is_instance_valid(prompt):
+			prompt.texture = load("res://assets/sprites/ui/press_start_%s.png" % Lang.current())
+			prompt.size = prompt.texture.get_size() * 4.0
+			prompt.position = Vector2(960, 840) - prompt.size * 0.5
+			prompt.pivot_offset = prompt.size * 0.5)
 	_footer = UIKit.label("Unofficial fan game  -  free, not for sale", 2, Color(1, 1, 1, 0.75), HORIZONTAL_ALIGNMENT_RIGHT, true)
 	_footer.size = Vector2(900, 40)
 	_footer.position = Vector2(1920 - 930, 1030)
