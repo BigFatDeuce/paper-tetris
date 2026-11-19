@@ -60,18 +60,19 @@ def down(img, size):
 
 # ------------------------------------------------------------------ blocks
 
-# every piece wears an original Paper Mario icon (Battle Extras & HUD sheet,
-# 24x24 cells): items for the bright pieces, partners for the others
+# every piece wears one of Mario's partners, as drawn on the original
+# Battle Extras & HUD sheet (24x24 cells), kept small so a full well stays calm
 ICON_SHEET = "Nintendo 64 - Paper Mario - Miscellaneous - Battle Extras & HUD.png"
 ICONS = {
-    "I": (249, 313),   # Star
-    "O": (19, 436),    # Mushroom
-    "T": (221, 313),   # Fire Flower
+    "I": (683, 314),   # Sushie
+    "O": (596, 313),   # Parakarry
+    "T": (654, 313),   # Watt
     "S": (542, 313),   # Kooper
-    "Z": (77, 436),    # 1-Up Mushroom
+    "Z": (712, 313),   # Lakilester
     "J": (567, 313),   # Bombette
     "L": (514, 314),   # Goombario
 }
+ICON_SPAN = 0.6       # icon size, share of the coloured face
 PAPER_RIM = (246, 236, 212)
 INK = (38, 30, 28)
 
@@ -116,7 +117,7 @@ def pm_block(kind, size=CELL):
     ic = _icon(kind)
     if ic is not None:
         span = S - 2 * i0
-        k = span * 0.84 / max(ic.size)
+        k = span * ICON_SPAN / max(ic.size)
         icon = ic.resize((max(1, round(ic.width * k)), max(1, round(ic.height * k))), Image.NEAREST)
         ox, oy = (S - icon.width) // 2, (S - icon.height) // 2
         sh = Image.new("RGBA", icon.size, (0, 0, 0, 0))
