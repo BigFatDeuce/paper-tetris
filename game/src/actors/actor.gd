@@ -296,8 +296,12 @@ var _jumping := false
 
 
 func jump(height := 70.0, dur := 0.55) -> void:
-	while _jumping:
+	# every await below needs the tree: outside it get_tree() is null, the
+	# await returns at once and a loop would spin forever (frozen game)
+	while _jumping and is_inside_tree():
 		await get_tree().process_frame
+	if not is_inside_tree():
+		return
 	_jumping = true
 	var tw := create_tween()
 	set_pose("jump", true)
@@ -309,7 +313,8 @@ func jump(height := 70.0, dur := 0.55) -> void:
 	air = 0.0
 	_jumping = false
 	set_pose("land")
-	await get_tree().create_timer(0.1, false).timeout
+	if is_inside_tree():
+		await get_tree().create_timer(0.1, false).timeout
 
 
 func hop() -> void:
@@ -317,7 +322,8 @@ func hop() -> void:
 
 
 func wait(t: float) -> void:
-	await get_tree().create_timer(t, false).timeout
+	if is_inside_tree():
+		await get_tree().create_timer(t, false).timeout
 
 
 ## Starts a new sequence: any previous one stops at its next step.

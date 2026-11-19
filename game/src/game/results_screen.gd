@@ -158,7 +158,7 @@ func _tally(mode: int, cleared: bool) -> void:
 	var dur := clampf(0.4 + target / (60.0 if is_time else 40000.0), 0.4, 1.6)
 	var t := 0.0
 	var tick := 0.0
-	while t < dur:
+	while t < dur and is_inside_tree():
 		var dt := get_process_delta_time()
 		t += dt
 		tick += dt

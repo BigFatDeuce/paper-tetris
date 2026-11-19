@@ -69,6 +69,26 @@ func test_director_crowd() -> void:
 	await get_tree().process_frame
 
 
+## Regression (Android freeze on a brown iris): a scene change takes the
+## director out of the tree a frame before freeing it. Its animation loops
+## must stop then: in release builds get_tree() is null, the await returns at
+## once and the loop used to spin forever.
+func test_director_loops_stop_outside_tree() -> void:
+	var d := Director.new()
+	add_child(d)
+	d.setup("stars", [Rect2(40, 930, 1840, 110)], [])
+	var before := d.get_child_count()
+	d._flyby()
+	var flyer: Node = d.get_child(d.get_child_count() - 1)
+	check(d.get_child_count() == before + 1 and flyer is Actor, "flyby actor spawned")
+	await get_tree().process_frame
+	remove_child(d)
+	for i in 3:
+		await get_tree().process_frame
+	check(not is_instance_valid(flyer) or flyer.is_queued_for_deletion(), "flyby loop ended once the director left the tree")
+	d.free()
+
+
 func test_actor_sequences() -> void:
 	var a := Actor.make("shyguy_red", 3)
 	a.position = Vector2(300, 1000)

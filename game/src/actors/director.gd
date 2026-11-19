@@ -498,7 +498,7 @@ func _flyby() -> void:
 	var t := 0.0
 	var start := a.position.x
 	var end := 2080.0 if ltr else -160.0
-	while t < dur and is_instance_valid(a):
+	while t < dur and is_instance_valid(a) and is_inside_tree():
 		t += get_process_delta_time()
 		a.position.x = lerpf(start, end, t / dur)
 		a.position.y = y + sin(t * 1.7) * 18.0
@@ -520,7 +520,7 @@ func _walk_across(key: String) -> void:
 		# hop hop hop across
 		var x := a.position.x
 		var step := 140.0 if ltr else -140.0
-		while is_instance_valid(a) and ((ltr and x < 2060.0) or (not ltr and x > -140.0)):
+		while is_instance_valid(a) and a.is_inside_tree() and ((ltr and x < 2060.0) or (not ltr and x > -140.0)):
 			x += step
 			a.face(1 if ltr else -1)
 			var tw := a.create_tween()
@@ -646,7 +646,7 @@ func parade() -> void:
 
 
 func _parade_loop(a: Actor, total: float) -> void:
-	while is_instance_valid(a):
+	while is_instance_valid(a) and a.is_inside_tree():
 		await a.go_to_free(2100.0)
 		if not is_instance_valid(a):
 			return
@@ -659,7 +659,7 @@ func _parade_loop(a: Actor, total: float) -> void:
 
 func _sky_loop(a: Actor) -> void:
 	var t := 0.0
-	while is_instance_valid(a):
+	while is_instance_valid(a) and is_inside_tree():
 		t += get_process_delta_time()
 		a.position.x += 60.0 * get_process_delta_time()
 		a.position.y = 200.0 + sin(t * 1.5) * 20.0
