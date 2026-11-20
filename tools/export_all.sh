@@ -28,13 +28,19 @@ for t in $TARGETS; do
   echo "== $preset"
   "$G" --headless --path game --export-release "$preset" "$ROOT/$out" 2>&1 | grep -E "ERROR|error|WARNING: .*export" | grep -v "resources still in use" 
   [ -f "$out" ] || { echo "!! $preset export failed"; exit 1; }
+  if [ "$t" = linux ]; then
+    # an ELF has no icon: install.sh adds a menu entry with the desktop icons
+    cp tools/linux/install.sh dist/linux/
+    cp -r tools/linux/icons dist/linux/
+  fi
   ls -la "$(dirname "$out")" | tail -n +2
 done
 
 # release archives
 mkdir -p dist/release
 case " $TARGETS " in *" windows "*) (cd dist/windows && python -c "import shutil;shutil.make_archive('../release/PaperTetris-$VERSION-windows','zip','.')") ;; esac
-case " $TARGETS " in *" linux "*) (cd dist/linux && python -c "import shutil;shutil.make_archive('../release/PaperTetris-$VERSION-linux','zip','.')") ;; esac
+# the Linux zip keeps the executable bits (zipped on Windows, none are set)
+case " $TARGETS " in *" linux "*) python tools/zip_linux.py dist/linux "dist/release/PaperTetris-$VERSION-linux.zip" ;; esac
 case " $TARGETS " in *" macos "*) cp dist/macos/PaperTetris-macOS.zip "dist/release/PaperTetris-$VERSION-macos.zip" ;; esac
 case " $TARGETS " in *" android "*) cp dist/android/PaperTetris.apk "dist/release/PaperTetris-$VERSION-android.apk" ;; esac
 ls -la dist/release

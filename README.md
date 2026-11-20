@@ -68,7 +68,7 @@ Grab the build for your system on the [latest release](https://github.com/BigFat
 | System | File | Notes |
 | --- | --- | --- |
 | Windows 10/11 (64-bit) | `PaperTetris-…-windows.zip` | Unzip and run `PaperTetris.exe`. The game isn't code-signed, so SmartScreen may warn you: click *More info → Run anyway*. |
-| Linux (x86_64) | `PaperTetris-…-linux.zip` | Unzip, then `chmod +x PaperTetris.x86_64` and run it. |
+| Linux (x86_64) | `PaperTetris-…-linux.zip` | Unzip and run `PaperTetris.x86_64`. To add the game to your applications menu with its icon, run `sh install.sh` from the unzipped folder (`sh install.sh --uninstall` removes it). |
 | macOS 11+ (Intel & Apple Silicon) | `PaperTetris-…-macos.zip` | Unzip and move *Paper Tetris* to Applications. The app isn't notarized: right-click it and choose *Open* the first time. |
 | Android 7+ | `PaperTetris-…-android.apk` | Allow installs from your browser or file manager when Android asks, then open the APK. |
 
