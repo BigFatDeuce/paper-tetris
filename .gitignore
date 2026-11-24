@@ -26,3 +26,9 @@ tools/pm_render/tex/
 
 # local recording override (trailer capture at 1080p)
 game/override.cfg
+
+# Local assistant notes, never published
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md

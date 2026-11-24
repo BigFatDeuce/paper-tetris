@@ -138,6 +138,11 @@ docs/               README images
 - **Sound samples** from [The Sounds Resource](https://www.sounds-resource.com/): aldelaro5.
 - Made with the [Godot Engine](https://godotengine.org/).
 
+## License
+
+© 2026 BigFatDeuce. The code is free software under the [GPL-3.0-or-later](LICENSE): you can use, study, share and modify it, and versions you distribute must stay under the same licence.
+The licence covers the game's own code only: the Nintendo and Intelligent Systems material described below is not covered and stays theirs.
+
 ## Legal
 
 **Paper Tetris is an unofficial, non-commercial fan project.** It isn't affiliated with, endorsed, sponsored or approved by Nintendo, Intelligent Systems or The Tetris Company.
@@ -160,3 +165,5 @@ If you are a rights holder and want something removed, please [open an issue](ht
 - Clavier, souris, manette (A valide, B revient) et écran tactile.
 
 Paper Mario, les Maskass ainsi que tous les personnages, graphismes, musiques et sons associés appartiennent à **Nintendo** et **Intelligent Systems**. Tetris est une marque de **The Tetris Company**. Ce projet n'est ni affilié ni approuvé par eux. Il est gratuit et ne doit pas être vendu. Pour toute demande de retrait, [ouvrez une issue](https://github.com/BigFatDeuce/paper-tetris/issues).
+
+© 2026 BigFatDeuce. Le code est un logiciel libre sous [GPL-3.0 ou ultérieure](LICENSE) : vous pouvez l'utiliser, l'étudier, le partager et le modifier, et les versions que vous distribuez restent sous la même licence. La licence couvre uniquement le code du jeu, pas les éléments de Nintendo et Intelligent Systems.
